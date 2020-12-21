@@ -1,4 +1,14 @@
-class ConveyorStategyMaze:
+class Level1:
+    def __init__(self):
+        self.remain_balls = 40
+        self.frog_position = [400, 400]
+        self.score_position = [500, 265]
+    def take_ball(self):
+        if self.remain_balls > 0:
+            self.remain_balls -= 1
+            return True
+        else:
+            return False
     def get_max_parameter(self):
         return 5.69
     def get_ball_position(self, ball):

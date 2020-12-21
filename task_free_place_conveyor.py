@@ -1,7 +1,7 @@
 class TaskFreePlaceConveyor:
     def __init__(self, balls_slice):
         self.balls_slice = balls_slice
-        self.remain = 4
+        self.remain = 7
     def tick(self):
         if self.remain <= 0:
             return

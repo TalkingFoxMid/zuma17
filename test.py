@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from baseWidget import BaseWidget
+from game_widget import BaseWidget
 
 
 class MouseTracker(QtCore.QObject):
