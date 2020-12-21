@@ -9,7 +9,11 @@ class GameState:
         self.balls_conveyor = BallsConveyor(self, game_level)
         self.balls = []
         self.task_manager = TaskManager()
-        self.next_color = 'red'
+        self.first_ball_color = 'red'
+        self.second_ball_color = 'red'
+        self.third_ball_color = 'red'
+        self.balls_swap_parameter = 0
+        self.balls_swap_parameter2 = 0
         self.score = 0
 
     def get_angle(self):

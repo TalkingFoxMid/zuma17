@@ -6,6 +6,7 @@ from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
 import random
 from game_levels.level1_river import Level1
+from game_levels.level2_river import Level2
 from game_widget import GameWidget
 from menu_widgets.MenuSelectWidget import MenuSelectWidget
 from menu_widgets.level_button import LevelButton
@@ -45,7 +46,6 @@ class MenuWidget(QWidget):
     def on_positionChanged(self, pos):
         for i in self.buttons:
             x,y,w,h = i.get_geometry()
-            print(x,y,w,h)
             if pos.x()>x and pos.x()<x+w and pos.y() > y and pos.y() < y+h:
                 i.is_pressed = True
             else:
@@ -62,9 +62,10 @@ class MenuWidget(QWidget):
         for i in self.buttons:
             if i.is_pressed:
                 i.on_click()
+
     def start_level_1(self):
         self.main_window.setCentralWidget(GameWidget(
-            Level1()
+            Level2()
         ))
     def select_level(self):
         print("dsf")
