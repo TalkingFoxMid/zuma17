@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
 import random
 
 from ball_pixmap_provider import BallPixmapProvider
+from game_levels.level0_menu import Level0
 from game_levels.level1_river import Level1
 from game_levels.level2_river import Level2
 from game_levels.level3_river import Level3
@@ -21,7 +22,7 @@ from mouse_tracker import MouseTracker
 from random_color_manager import RandomColorManager
 
 
-class MenuWidget(QWidget):
+class MenuWidget(GameWidget):
     def __init__(self, main_window):
         super().__init__()
         self.mouse_last_x = 0
