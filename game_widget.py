@@ -49,9 +49,14 @@ class GameWidget(QWidget):
 
 
 
+
     def addBallsFloatParameter(self):
         self.balls_float_animation += 0.2
     def handle_timer(self):
+        if self.game_state.game_ended_win:
+            self.end_game_win()
+        if len(self.game_state.balls_conveyor.balls_list) == 0 and self.game_state.balls_conveyor.no_balls_remain:
+            self.game_state.game_ended_win = True
         if self.game_state.lost:
             self.back()
 
@@ -187,6 +192,8 @@ class GameWidget(QWidget):
         self.main_window.setCentralWidget(type(self.main_window)())
     def show_hide_exit_button(self):
         self.buttons[0].hidden = not self.buttons[0].hidden
+    def end_game_win(self):
+        pass
     @pyqtSlot(QPoint)
     def on_positionChanged(self, pos):
         for i in self.buttons:

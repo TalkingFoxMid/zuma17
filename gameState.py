@@ -17,6 +17,7 @@ class GameState:
         self.score = 0
         self.cooldown = 0
         self.lost = False
+        self.game_ended_win = False
 
     def is_cool_down(self):
         return self.cooldown > 0

@@ -15,6 +15,7 @@ class BallsConveyor:
         self.last_ball_parameter = 0
         self.random_color_manager = RandomColorManager()
         self.last_ball = None
+        self.no_balls_remain = False
 
         self.maze_strategy = maze_level
     def get_color_distribution(self):
@@ -80,6 +81,8 @@ class BallsConveyor:
         if len(self.balls_list) == 0 or self.balls_list[-1].parameter > 0.07:
             if self.maze_strategy.take_ball():
                 self.spawn_random_ball()
+            else:
+                self.no_balls_remain = True
     def release_balls(self, index):
         color = self.balls_list[index].color
         right_edge = index
