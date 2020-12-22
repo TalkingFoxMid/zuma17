@@ -1,3 +1,4 @@
+from functools import partial
 from tkinter import BaseWidget
 
 from PyQt5.QtCore import QTimer, pyqtSlot, QPoint, QUrl, QDir
@@ -7,6 +8,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
 import random
 from game_levels.level1_river import Level1
 from game_levels.level2_river import Level2
+from game_levels.level3_river import Level3
 from game_widget import GameWidget
 from menu_widgets.MenuSelectWidget import MenuSelectWidget
 from menu_widgets.level_button import LevelButton
@@ -39,7 +41,9 @@ class MenuWidget(QWidget):
         ]
         self.buttons = self.buttons_main_menu
         self.level_buttons = [
-            LevelButton(100,100,"resources/text_1.png", self.start_level_1)
+            LevelButton(100,100,"resources/text_1.png", partial(self.start_level, Level1)),
+            LevelButton(300, 100, "resources/text_2.png", partial(self.start_level, Level2)),
+            LevelButton(500, 100, "resources/text_3.png", partial(self.start_level, Level3))
         ]
 
     @pyqtSlot(QPoint)
@@ -63,10 +67,14 @@ class MenuWidget(QWidget):
             if i.is_pressed:
                 i.on_click()
 
-    def start_level_1(self):
+    def start_level(self, level):
         self.main_window.setCentralWidget(GameWidget(
-            Level2()
+            level(),
+            self.main_window,
+            self
         ))
+
+
     def select_level(self):
         print("dsf")
         self.buttons = self.level_buttons

@@ -15,12 +15,24 @@ class GameState:
         self.balls_swap_parameter = 0
         self.balls_swap_parameter2 = 0
         self.score = 0
+        self.cooldown = 0
+        self.lost = False
+
+    def is_cool_down(self):
+        return self.cooldown > 0
 
     def get_angle(self):
         return self.angle
+    def down_cooldowns(self):
+        if self.cooldown > 0:
+            self.cooldown -= 1
+
+    def freeze_cooldown(self):
+        self.cooldown = 5
 
     def tick(self):
         self.task_manager.task_tick()
+        self.down_cooldowns()
 
     def add_task(self, task):
         self.task_manager.add_task(task)

@@ -6,6 +6,7 @@ class MenuButton:
         self.width = 327
         self.height = 106
         self.is_pressed = False
+
         self.text_resource = text_resource
     def get_geometry(self):
         if not self.is_pressed:

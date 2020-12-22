@@ -1,3 +1,5 @@
+import math
+
 from PyQt5.QtGui import QColor
 import sys
 from conveyor_ball import ConveyorBall
@@ -15,12 +17,23 @@ class BallsConveyor:
         self.last_ball = None
 
         self.maze_strategy = maze_level
+    def get_color_distribution(self):
+        color_distribution = [0,0,0,0]
+        colors = ['red','blue','green', 'yellow']
+        for i in self.balls_list:
+            color_distribution[
+                colors.index(
+                    i.color
+                )
+            ] += 1
+        return color_distribution
+
     def tick(self):
         for i in self.balls_list:
             if i.parameter > self.maze_strategy.get_max_parameter():
                 self.balls_list.remove(i)
-                sys.exit(1)
-                continue
+                self.game_state.lost = True
+                return
             if i.must_been_deleted:
                 self.game_state.score += 10
                 self.balls_list.remove(i)
@@ -34,6 +47,8 @@ class BallsConveyor:
             distance = self.balls_list[i].parameter - self.balls_list[i+1].parameter
             if distance < 0.08:
                 self.balls_list[i].parameter += ((0.08-distance)*0.3)
+            else:
+                self.balls_list[i].parameter -= 0.005
 
 
 
@@ -97,9 +112,13 @@ class BallsConveyor:
         for i in self.balls_list:
             if i.unriverable:
                 continue
-            if abs(flying_ball.x - i.x) > 30:
+            dx = flying_ball.x - i.x
+            dy = flying_ball.y - i.y
+            if abs(dx) > 42:
                 continue
-            if abs(flying_ball.y - i.y) > 30:
+            if abs(dy) > 42:
+                continue
+            if math.sqrt(dx*dx+dy*dy) > 42:
                 continue
             index = self.balls_list.index(i)
 

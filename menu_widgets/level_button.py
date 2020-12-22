@@ -6,6 +6,7 @@ class LevelButton:
         self.width = 135
         self.height = 98
         self.is_pressed = False
+        self.hidden = False
         self.text_resource = text_resource
     def get_geometry(self):
         return [self.left,self.up, self.width, self.height]

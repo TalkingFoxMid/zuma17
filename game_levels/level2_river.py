@@ -2,7 +2,7 @@ class Level2:
     def __init__(self):
         self.remain_balls = 40
         self.frog_position = [390, 400]
-        self.score_position = [500, 265]
+        self.score_position = [389, 158]
         self.map_resource = "resources/map2.png"
     def take_ball(self):
         if self.remain_balls > 0:
@@ -11,7 +11,7 @@ class Level2:
         else:
             return False
     def get_max_parameter(self):
-        return 6.28
+        return 6.20
     def get_ball_position(self, ball):
         p = ball.parameter
         if p > 0 and p <= 1:
