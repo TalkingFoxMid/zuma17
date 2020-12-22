@@ -48,6 +48,12 @@ class BallsConveyor:
             distance = self.balls_list[i].parameter - self.balls_list[i+1].parameter
             if distance < 0.08:
                 self.balls_list[i].parameter += ((0.08-distance)*0.3)
+                if self.balls_list[i].hot and self.balls_list[i+1].hot:
+                    b1 = self.balls_list[i]
+                    b2 = self.balls_list[i+1]
+                    self.release_balls(i)
+                    b1.hot = False
+                    b2.hot = False
             else:
                 self.balls_list[i].parameter -= 0.005
 
@@ -104,7 +110,8 @@ class BallsConveyor:
                 i.unriverable = True
             self.game_state.add_task(
                 TaskDeleteConveyorBalls(
-                    self.balls_list[left_edge: right_edge+1]
+                    self.balls_list[left_edge: right_edge+1],
+                    self
                 )
             )
 

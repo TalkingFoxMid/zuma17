@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QGridLayout
 from ball_pixmap_provider import BallPixmapProvider
 from canvasLabel import CanvasLabel
 from conveyor_ball import ConveyorBall
+from end_game_win_widget import EndGameWinWidget
 from flyingBall import FlyingBall
 from gameState import GameState
 import math
@@ -138,6 +139,7 @@ class GameWidget(QWidget):
         self.qp.setPen(QColor(0,0,0))
         x, y = self.game_level.score_position
         self.qp.drawText(x, y, str(self.game_state.score))
+
     def draw_flying_balls(self):
         bpp = self.ball_pixmap_provider
         for i in self.game_state.balls:
@@ -163,7 +165,9 @@ class GameWidget(QWidget):
         for i in self.game_state.balls_conveyor.get_balls_list():
             x, y = self.game_state.balls_conveyor.get_ball_position(i)
 
-            self.qp.drawPixmap(x-i.diameter/2, y-i.diameter/2, i.diameter, i.diameter,
+            self.qp.drawPixmap(x-i.diameter/2, y-i.diameter/2,
+                               i.diameter,
+                               i.diameter,
                                bpp.get_pixmap(i.color))
 
 
@@ -193,7 +197,11 @@ class GameWidget(QWidget):
     def show_hide_exit_button(self):
         self.buttons[0].hidden = not self.buttons[0].hidden
     def end_game_win(self):
-        pass
+        self.main_window.setCentralWidget(EndGameWinWidget(
+            self.main_window,
+            self.menu_widget,
+            self.game_state.score
+        ))
     @pyqtSlot(QPoint)
     def on_positionChanged(self, pos):
         for i in self.buttons:

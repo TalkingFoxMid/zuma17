@@ -4,6 +4,7 @@ from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtWidgets import *
 import sys
 
+from end_game_win_widget import EndGameWinWidget
 from game_widget import GameWidget
 from menu_widgets.menu_widget import MenuWidget
 
@@ -22,6 +23,15 @@ class MainWindow(QMainWindow):
     def keyPressEvent(self, a0: QKeyEvent) -> None:
         if a0.key() == 16777216 and isinstance(self.centralWidget(), GameWidget):
             self.centralWidget().show_hide_exit_button()
+        if isinstance(self.centralWidget(), EndGameWinWidget):
+            if a0.key() == 16777219:
+                self.centralWidget().remove_name_symbol()
+                return
+            txt = a0.text()
+            if len(txt) == 1:
+                self.centralWidget().add_name_symbol(txt)
+
+
 
 
 if __name__ == '__main__':

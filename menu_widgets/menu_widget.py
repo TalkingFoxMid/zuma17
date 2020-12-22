@@ -22,7 +22,7 @@ from mouse_tracker import MouseTracker
 from random_color_manager import RandomColorManager
 
 
-class MenuWidget(GameWidget):
+class MenuWidget(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.mouse_last_x = 0

@@ -7,3 +7,4 @@ class ConveyorBall:
         self.diameter = 42
         self.must_been_deleted = False
         self.unriverable = False
+        self.hot = False

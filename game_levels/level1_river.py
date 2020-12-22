@@ -1,6 +1,6 @@
 class Level1:
     def __init__(self):
-        self.remain_balls = 40
+        self.remain_balls = 0
         self.frog_position = [400, 400]
         self.score_position = [500, 265]
         self.map_resource = "resources/map.png"
