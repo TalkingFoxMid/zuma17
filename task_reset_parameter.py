@@ -19,7 +19,6 @@ class TaskResetParameter:
         if self.remain <= 0:
             self.game_state.balls_swap_parameter = 0
             self.game_state.balls_swap_parameter2 = 0
-            print("RESETED")
             return
     def get_remain(self):
         return self.remain

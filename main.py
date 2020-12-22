@@ -11,7 +11,11 @@ from menu_widgets.menu_widget import MenuWidget
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
+        self.url = QUrl.fromLocalFile("resources/music.mp3")
+        self.content = QMediaContent(self.url)
+        self.player  =QMediaPlayer()
+        self.player.setMedia(self.content)
+        self.player.play()
         self.menu_widget = MenuWidget(self)
         self.setCentralWidget(self.menu_widget)
         self.setGeometry(0, 0, 800, 800)

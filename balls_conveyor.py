@@ -106,7 +106,6 @@ class BallsConveyor:
             )
 
 
-        print(left_edge,index, right_edge)
 
     def try_to_inplace_ball(self, flying_ball):
         for i in self.balls_list:

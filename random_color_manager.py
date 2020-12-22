@@ -6,7 +6,6 @@ from PyQt5.QtGui import QColor
 class RandomColorManager:
     def get_random_color(self, color_distribution=None):
         colors = ['red','blue','green', 'yellow']
-        print(color_distribution)
         if color_distribution is None:
             return random.choice(colors)
         elif sum(color_distribution) == 0:
