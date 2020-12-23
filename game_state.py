@@ -21,13 +21,16 @@ class GameState:
         self.cooldown = 0
         self.lost = False
         self.game_ended_win = False
+
     def set_animation_manager(self, animation_manager):
         self.animation_manager = animation_manager
+
     def is_cool_down(self):
         return self.cooldown > 0
 
     def get_angle(self):
         return self.angle
+
     def down_cooldowns(self):
         if self.cooldown > 0:
             self.cooldown -= 1
@@ -36,6 +39,7 @@ class GameState:
 
     def freeze_cooldown(self):
         self.cooldown = 5
+
     def freeze_change_cooldown(self):
         self.change_balls_cooldown = 250
 

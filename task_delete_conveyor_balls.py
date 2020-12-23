@@ -4,6 +4,7 @@ class TaskDeleteConveyorBalls:
         self.basic_remain = 11
         self.balls_conveyor = balls_conveyor
         self.remain = self.basic_remain
+
     def tick(self):
         self.remain -= 1
         if self.remain <= 0:
@@ -13,14 +14,14 @@ class TaskDeleteConveyorBalls:
                 index1 = self.balls_conveyor.balls_list.index(self.balls_slice[0]) - 1
                 if index1 > 0:
                     self.balls_conveyor.balls_list[index1].hot = True
-            except:
+            except IndexError:
                 pass
             index2 = self.balls_conveyor.balls_list.index(self.balls_slice[-1]) + 1
 
             if index2 != len(self.balls_slice):
                 try:
                     self.balls_conveyor.balls_list[index2].hot = True
-                except:
+                except IndexError:
                     pass
             return
         for i in self.balls_slice:

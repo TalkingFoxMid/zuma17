@@ -9,5 +9,6 @@ class BallPixmapProvider:
             "blue": QPixmap("resources/blue_ball.png"),
             "yellow": QPixmap("resources/yellow_ball.png"),
         }
+
     def get_pixmap(self, color):
         return self.pixmap_dictionary[color]

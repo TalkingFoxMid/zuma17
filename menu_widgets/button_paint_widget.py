@@ -11,7 +11,7 @@ class ButtonPaintWidget(QWidget):
 
         self.label = QLabel()
         tracker = MouseTracker(self.label)
-        tracker.positionChanged.connect(self.on_positionChanged)
+        tracker.positionChanged.connect(self.on_position_changed)
         self.buttons = []
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
@@ -20,6 +20,7 @@ class ButtonPaintWidget(QWidget):
         self.timer = QTimer()
         self.timer.timeout.connect(self.handle_timer)
         self.timer.start(40)
+
     def paint_buttons(self):
         for i in self.buttons:
             x, y, w, h = i.get_geometry()
@@ -27,7 +28,7 @@ class ButtonPaintWidget(QWidget):
             self.qp.drawPixmap(x, y, w, h, QPixmap(i.text_resource))
 
     def paint_background(self):
-        self.qp.drawPixmap(0,0,800,800,QPixmap(self.background))
+        self.qp.drawPixmap(0, 0, 800, 800, QPixmap(self.background))
 
     def mousePressEvent(self, a0):
         for i in self.buttons:
@@ -35,7 +36,7 @@ class ButtonPaintWidget(QWidget):
                 i.on_click()
 
     @pyqtSlot(QPoint)
-    def on_positionChanged(self, pos):
+    def on_position_changed(self, pos):
         for i in self.buttons:
             x, y, w, h = i.get_geometry()
             if pos.x() > x and pos.x() < x + w and pos.y() > y and pos.y() < y + h:

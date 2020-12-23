@@ -15,12 +15,13 @@ class MainWindow(QMainWindow):
 
         self.url = QUrl.fromLocalFile("resources/music.mp3")
         self.content = QMediaContent(self.url)
-        self.player  =QMediaPlayer()
+        self.player = QMediaPlayer()
         self.player.setMedia(self.content)
         self.player.play()
         self.menu_widget = MenuWidget(self)
         self.setCentralWidget(self.menu_widget)
         self.setGeometry(0, 0, 800, 800)
+
     def keyPressEvent(self, a0: QKeyEvent) -> None:
         if a0.key() == 16777216 and isinstance(self.centralWidget(), GameWidget):
             self.centralWidget().change_meta_menud_state()
@@ -33,10 +34,7 @@ class MainWindow(QMainWindow):
                 self.centralWidget().add_name_symbol(txt)
 
 
-
-
 if __name__ == '__main__':
-
     app = QApplication(sys.argv)
     w = MainWindow()
     w.show()

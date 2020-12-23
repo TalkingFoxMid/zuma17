@@ -19,6 +19,7 @@ class LeaderBoardWidget(ButtonPaintWidget):
         self.main_window = main_window
         self.background = "resources/parfenon.png"
         self.leader_board_back = "resources/leader_board.png"
+
     def back(self):
         self.close()
         self.main_window.setCentralWidget(
@@ -29,8 +30,6 @@ class LeaderBoardWidget(ButtonPaintWidget):
         self.label.setPixmap(QPixmap(800, 800))
         self.qp = QPainter(self.label.pixmap())
         self.qp.setFont(QFont("arial", 35))
-
-
 
         self.paint_background()
         self.paint_results()
@@ -48,11 +47,10 @@ class LeaderBoardWidget(ButtonPaintWidget):
                              pos[1],
                              f"{res[0]}")
             self.qp.drawText(pos[0],
-                             pos[1]+75,
+                             pos[1] + 75,
                              f"{res[1]}")
+
     def paint_background(self):
 
-
-        self.qp.drawPixmap(0,0,800,800,QPixmap(self.background))
+        self.qp.drawPixmap(0, 0, 800, 800, QPixmap(self.background))
         self.qp.drawPixmap(0, 0, 800, 800, QPixmap(self.leader_board_back))
-
