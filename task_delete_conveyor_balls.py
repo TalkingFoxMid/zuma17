@@ -6,7 +6,6 @@ class TaskDeleteConveyorBalls:
         self.remain = self.basic_remain
     def tick(self):
         self.remain -= 1
-        print(self.remain)
         if self.remain <= 0:
             for i in self.balls_slice:
                 i.must_been_deleted = True

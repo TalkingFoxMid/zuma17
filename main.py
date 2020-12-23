@@ -12,6 +12,7 @@ from menu_widgets.menu_widget import MenuWidget
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+
         self.url = QUrl.fromLocalFile("resources/music.mp3")
         self.content = QMediaContent(self.url)
         self.player  =QMediaPlayer()
@@ -22,7 +23,7 @@ class MainWindow(QMainWindow):
         self.setGeometry(0, 0, 800, 800)
     def keyPressEvent(self, a0: QKeyEvent) -> None:
         if a0.key() == 16777216 and isinstance(self.centralWidget(), GameWidget):
-            self.centralWidget().show_hide_exit_button()
+            self.centralWidget().change_meta_menud_state()
         if isinstance(self.centralWidget(), EndGameWinWidget):
             if a0.key() == 16777219:
                 self.centralWidget().remove_name_symbol()

@@ -7,11 +7,12 @@ from mouse_tracker import MouseTracker
 
 
 class EndGameWinWidget(QWidget):
-    def __init__(self, main_window, menu_widget, score):
+    def __init__(self, main_window, menu_widget, score, lvl):
         super().__init__()
         self.buttons = [
             MenuButton(199, 624, "resources/menu_text.png", self.back)
         ]
+        self.lvl = lvl
         self.name = "Convert"
         self.menu_widget = menu_widget
         self.main_window = main_window
@@ -27,6 +28,7 @@ class EndGameWinWidget(QWidget):
         tracker.positionChanged.connect(self.on_positionChanged)
 
     def handle_timer(self):
+
         self.label.setPixmap(QPixmap(800, 800))
         self.qp = QPainter(self.label.pixmap())
         self.qp.setFont(QFont("arial", 55))
@@ -54,6 +56,10 @@ class EndGameWinWidget(QWidget):
     def back(self):
         print(self.main_window, self.menu_widget)
         self.close()
+        self.menu_widget.set_result([self.lvl-1,
+                                     [self.name, self.score]
+
+        ])
         self.main_window.setCentralWidget(type(self.menu_widget)(self.main_window))
 
     def mousePressEvent(self, a0):

@@ -3,6 +3,7 @@ class Level3:
         self.remain_balls = 17
         self.frog_position = [390, 400]
         self.score_position = [389, 158]
+        self.number = 3
         self.map_resource = "resources/map3.png"
     def take_ball(self):
         if self.remain_balls > 0:

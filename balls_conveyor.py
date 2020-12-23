@@ -2,6 +2,8 @@ import math
 
 from PyQt5.QtGui import QColor
 import sys
+
+from animation_manager.points_animation import PointsAnimation
 from conveyor_ball import ConveyorBall
 from random_color_manager import RandomColorManager
 from task_delete_conveyor_balls import TaskDeleteConveyorBalls
@@ -12,6 +14,7 @@ class BallsConveyor:
     def __init__(self, game_state, maze_level):
         self.balls_list = []
         self.game_state = game_state
+        self.speed = 1
         self.last_ball_parameter = 0
         self.random_color_manager = RandomColorManager()
         self.last_ball = None
@@ -31,19 +34,22 @@ class BallsConveyor:
 
     def tick(self):
         for i in self.balls_list:
+            i.x, i.y = self.get_ball_position(i)
             if i.parameter > self.maze_strategy.get_max_parameter():
                 self.balls_list.remove(i)
+
                 self.game_state.lost = True
                 return
             if i.must_been_deleted:
                 self.game_state.score += 10
+
                 self.balls_list.remove(i)
         for i in range(len(self.balls_list)-1,-1,-1):
             if not self.can_ball_go(i):
                 continue
 
             if i == len(self.balls_list)-1:
-                self.balls_list[i].parameter += 0.005
+                self.balls_list[i].parameter += 0.005*self.speed
                 continue
             distance = self.balls_list[i].parameter - self.balls_list[i+1].parameter
             if distance < 0.08:
@@ -105,9 +111,17 @@ class BallsConveyor:
             break
 
         if right_edge - left_edge + 1 >= 3:
+            mid = self.balls_list[int((right_edge + left_edge)/2)]
+
+            self.game_state.animation_manager.add_animation(
+                PointsAnimation(mid.x,
+                                mid.y,
+                                10*(right_edge - left_edge + 1),
+                                mid.color)
+            )
             for i in self.balls_list[left_edge: right_edge+1]:
-                i.x, i.y = self.get_ball_position(i)
                 i.unriverable = True
+
             self.game_state.add_task(
                 TaskDeleteConveyorBalls(
                     self.balls_list[left_edge: right_edge+1],
@@ -130,11 +144,12 @@ class BallsConveyor:
             if math.sqrt(dx*dx+dy*dy) > 42:
                 continue
             index = self.balls_list.index(i)
-
-            self.balls_list.insert(index, ConveyorBall(
+            new_ball = ConveyorBall(
                 flying_ball.color,
                 i.parameter+0.07
-            ))
+            )
+            new_ball.x, new_ball.y = self.get_ball_position(new_ball)
+            self.balls_list.insert(index, new_ball)
             if index != 0:
                 self.balls_list[index - 1].parameter += 0.07
             self.release_balls(index)

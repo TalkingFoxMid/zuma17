@@ -9,12 +9,15 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
 import random
 
 from ball_pixmap_provider import BallPixmapProvider
+from end_game_lose_widget import EndGameLoseWidget
 from game_levels.level0_menu import Level0
 from game_levels.level1_river import Level1
 from game_levels.level2_river import Level2
 from game_levels.level3_river import Level3
 from game_widget import GameWidget
+from leader_board_manager import LeaderBoardManager
 from menu_widgets.MenuSelectWidget import MenuSelectWidget
+from menu_widgets.leader_board_widget import LeaderBoardWidget
 from menu_widgets.level_button import LevelButton
 from menu_widgets.menu_ball import MenuBall
 from menu_widgets.menu_button import MenuButton
@@ -25,6 +28,8 @@ from random_color_manager import RandomColorManager
 class MenuWidget(QWidget):
     def __init__(self, main_window):
         super().__init__()
+        self.leader_board_manager = LeaderBoardManager()
+
         self.mouse_last_x = 0
         self.mouse_last_y = 0
         self.ball_offset_x = 0
@@ -45,7 +50,8 @@ class MenuWidget(QWidget):
         self.timer.start(40)
         self.balls = []
         self.buttons_main_menu = [
-            MenuButton(199,424, "resources/play.png", self.select_level)
+            MenuButton(199,424, "resources/play.png", self.select_level),
+            MenuButton(199, 564, "resources/leader_board_text.png", self.open_leader_board)
         ]
         self.buttons = self.buttons_main_menu
         self.level_buttons = [
@@ -64,6 +70,7 @@ class MenuWidget(QWidget):
             else:
                 i.is_pressed = False
     def handle_timer(self):
+
         self.iter += 0.1
         self.label.setPixmap(QPixmap(800, 800))
         self.qp = QPainter(self.label.pixmap())
@@ -111,6 +118,12 @@ class MenuWidget(QWidget):
 
     def select_level(self):
         self.buttons = self.level_buttons
+    def open_leader_board(self):
+        self.main_window.setCentralWidget(
+            LeaderBoardWidget(self.main_window,
+                              self,
+                              self.leader_board_manager)
+        )
 
     def move_balls(self):
         rnd = random.randint(0,10)
@@ -151,6 +164,8 @@ class MenuWidget(QWidget):
             x,y,w,h = i.get_geometry()
             self.qp.drawPixmap(x, y, w, h, QPixmap(i.get_pixmap()))
             self.qp.drawPixmap(x,y,w,h,QPixmap(i.text_resource))
+    def set_result(self, result):
+        self.leader_board_manager.set_result(result)
     def mouseMoveBalls(self, a0):
         dx = (self.mouse_last_x - a0.x())*0.03
         dy = (self.mouse_last_y - a0.y())*0.03
