@@ -2,10 +2,10 @@ from PyQt5.QtCore import pyqtSlot, QPoint, QTimer
 from PyQt5.QtGui import QPixmap, QPainter, QFont, QColor
 from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout
 
-from end_game_win_widget import EndGameWinWidget
-from menu_widgets.button_paint_widget import ButtonPaintWidget
-from menu_widgets.menu_button import MenuButton
-from mouse_tracker import MouseTracker
+
+from widgets.button_paint_widget import ButtonPaintWidget
+from widgets.menu_button import MenuButton
+from widgets.mouse_tracker import MouseTracker
 
 
 class EndGameLoseWidget(ButtonPaintWidget):

@@ -1,8 +1,8 @@
 from PyQt5.QtGui import QPainter, QPixmap, QFont
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 
-from menu_widgets.button_paint_widget import ButtonPaintWidget
-from menu_widgets.menu_button import MenuButton
+from widgets.button_paint_widget import ButtonPaintWidget
+from widgets.menu_button import MenuButton
 
 
 class LeaderBoardWidget(ButtonPaintWidget):

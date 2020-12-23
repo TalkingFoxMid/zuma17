@@ -1,8 +1,8 @@
 from PyQt5.QtCore import QTimer, pyqtSlot, QPoint
-from PyQt5.QtGui import QPixmap, QPainter
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
 
-from mouse_tracker import MouseTracker
+from widgets.mouse_tracker import MouseTracker
 
 
 class ButtonPaintWidget(QWidget):

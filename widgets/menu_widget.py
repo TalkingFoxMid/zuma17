@@ -1,33 +1,32 @@
 import math
 from functools import partial
 
-from PyQt5.QtCore import QTimer, pyqtSlot, QPoint, QUrl, QDir
-from PyQt5.QtGui import QPixmap, QPainter, QColor, QMouseEvent
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
+from PyQt5.QtCore import QTimer, pyqtSlot, QPoint
+from PyQt5.QtGui import QPixmap, QPainter
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
 import random
-
-from ball_pixmap_provider import BallPixmapProvider
-from end_game_lose_widget import EndGameLoseWidget
-from game_levels.level0_menu import Level0
+import time
+from special_providers.ball_pixmap_provider import BallPixmapProvider
 from game_levels.level1_river import Level1
 from game_levels.level2_river import Level2
 from game_levels.level3_river import Level3
-from game_widget import GameWidget
-from leader_board_manager import LeaderBoardManager
-from menu_widgets.MenuSelectWidget import MenuSelectWidget
-from menu_widgets.leader_board_widget import LeaderBoardWidget
-from menu_widgets.level_button import LevelButton
-from menu_widgets.menu_ball import MenuBall
-from menu_widgets.menu_button import MenuButton
-from mouse_tracker import MouseTracker
-from random_color_manager import RandomColorManager
+from special_providers.fs_provider import FsProvider
+from widgets.game_widget import GameWidget
+from leader_board_manager.leader_board_manager import LeaderBoardManager
+from widgets.leader_board_widget import LeaderBoardWidget
+from widgets.level_button import LevelButton
+from widgets.menu_ball import MenuBall
+from widgets.menu_button import MenuButton
+from widgets.mouse_tracker import MouseTracker
+from special_providers.random_color_provider import RandomColorManager
 
 
 class MenuWidget(QWidget):
     def __init__(self, main_window):
         super().__init__()
-        self.leader_board_manager = LeaderBoardManager()
+        self.leader_board_manager = LeaderBoardManager(
+            FsProvider()
+        )
 
         self.mouse_last_x = 0
         self.mouse_last_y = 0
@@ -40,10 +39,10 @@ class MenuWidget(QWidget):
         self.iter = 0
         self.label.setPixmap(QPixmap("resources/zuma_menu.png"))
         self.layout.addWidget(self.label)
-        self.random_color_manager = RandomColorManager()
+        self.random_color_manager = RandomColorManager(time.time())
         self.ball_pixmap_provider = BallPixmapProvider()
         tracker = MouseTracker(self.label)
-        tracker.positionChanged.connect(self.on_positionChanged)
+        tracker.positionChanged.connect(self.on_position_changed)
         self.timer = QTimer()
         self.timer.timeout.connect(self.handle_timer)
         self.timer.start(40)
@@ -60,7 +59,7 @@ class MenuWidget(QWidget):
         ]
 
     @pyqtSlot(QPoint)
-    def on_positionChanged(self, pos):
+    def on_position_changed(self, pos):
         self.mouse_move_balls(pos)
         for i in self.buttons:
             x, y, w, h = i.get_geometry()

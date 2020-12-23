@@ -1,17 +1,15 @@
-from balls_conveyor import BallsConveyor
-from flyingBall import FlyingBall
-from frog_operator import FrogOperator
-from random_color_manager import RandomColorManager
-from task_manager import TaskManager
-from task_reset_parameter import TaskResetParameter
+from game_logic.balls_conveyor import BallsConveyor
+from game_logic.frog_operator import FrogOperator
+from task_manager.task_manager import TaskManager
 
 
 class GameState:
-    def __init__(self, game_level):
+    def __init__(self, game_level, random_color_manager):
         self.angle = 0
+        self.random_color_manager = random_color_manager
         self.animation_manager = None
         self.game_level = game_level
-        self.balls_conveyor = BallsConveyor(self, game_level)
+
         self.balls = []
         self.frog_operator = FrogOperator(self)
         self.task_manager = TaskManager()
@@ -19,6 +17,7 @@ class GameState:
         self.score = 0
         self.lost = False
         self.game_ended_win = False
+        self.balls_conveyor = BallsConveyor(self, game_level)
 
     def set_animation_manager(self, animation_manager):
         self.animation_manager = animation_manager

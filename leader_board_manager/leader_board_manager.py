@@ -2,21 +2,25 @@ import json
 
 
 class LeaderBoardManager:
-    def __init__(self):
+    def __init__(self, fs_provider):
         self.results = []
+        self.fs_provider = fs_provider
         self.load_from_file()
+        while len(self.results) < 9:
+            self.results += [["", 0]]
 
     def load_from_file(self):
-        with open("leaderboard", "r") as f:
-            txt = f.read()
+        txt = self.fs_provider.read_from_file(
+            "leaderboard"
+        )
 
-            if len(txt) == 0:
-                return
-            self.results = json.loads(txt)
+        if len(txt) == 0:
+            return
+        self.results = json.loads(txt)
 
     def save_to_file(self):
-        with open("leaderboard", "w") as f:
-            f.write(json.dumps(self.results))
+        self.fs_provider.write_in_file("leaderboard",
+                                       json.dumps(self.results))
 
     def get_level_result(self, level):
         if len(self.results) < level:
@@ -24,8 +28,8 @@ class LeaderBoardManager:
         return self.results[level - 1]
 
     def set_result(self, result):
-        if self.results[result[0]] < result[1]:
-            self.results[result[0]] = result[1]
+        if self.results[result[0] - 1] < result[1]:
+            self.results[result[0] - 1] = result[1]
         self.save_to_file()
 
     def get_draw_position(self, level):

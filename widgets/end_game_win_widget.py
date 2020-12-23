@@ -2,8 +2,8 @@ from PyQt5.QtCore import pyqtSlot, QPoint, QTimer
 from PyQt5.QtGui import QPixmap, QPainter, QFont, QColor
 from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout
 
-from menu_widgets.menu_button import MenuButton
-from mouse_tracker import MouseTracker
+from widgets.menu_button import MenuButton
+from widgets.mouse_tracker import MouseTracker
 
 
 class EndGameWinWidget(QWidget):
@@ -56,7 +56,7 @@ class EndGameWinWidget(QWidget):
     def back(self):
         print(self.main_window, self.menu_widget)
         self.close()
-        self.menu_widget.set_result([self.lvl - 1,
+        self.menu_widget.set_result([self.lvl,
                                      [self.name, self.score]
 
                                      ])

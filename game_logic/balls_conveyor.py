@@ -1,37 +1,27 @@
 import math
 
-from PyQt5.QtGui import QColor
-import sys
-
 from animation_manager.points_animation import PointsAnimation
-from conveyor_ball import ConveyorBall
-from random_color_manager import RandomColorManager
-from task_delete_conveyor_balls import TaskDeleteConveyorBalls
-from task_free_place_conveyor import TaskFreePlaceConveyor
+from special_providers.color_distribution_provider import ColorDistributionProvider
+from game_logic.conveyor_ball import ConveyorBall
+from task_manager.task_delete_conveyor_balls import TaskDeleteConveyorBalls
 
 
 class BallsConveyor:
     def __init__(self, game_state, maze_level):
         self.balls_list = []
+        self.color_distribution_provider = ColorDistributionProvider()
         self.game_state = game_state
         self.speed = 1
         self.last_ball_parameter = 0
-        self.random_color_manager = RandomColorManager()
+        self.random_color_manager = self.game_state.random_color_manager
         self.last_ball = None
         self.no_balls_remain = False
 
         self.maze_strategy = maze_level
 
     def get_color_distribution(self):
-        color_distribution = [0, 0, 0, 0]
-        colors = ['red', 'blue', 'green', 'yellow']
-        for i in self.balls_list:
-            color_distribution[
-                colors.index(
-                    i.color
-                )
-            ] += 1
-        return color_distribution
+        return self.color_distribution_provider.get_color_distribution(
+            self.balls_list)
 
     def tick(self):
         for i in self.balls_list:

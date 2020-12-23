@@ -4,9 +4,9 @@ from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtWidgets import *
 import sys
 
-from end_game_win_widget import EndGameWinWidget
-from game_widget import GameWidget
-from menu_widgets.menu_widget import MenuWidget
+from widgets.end_game_win_widget import EndGameWinWidget
+from widgets.game_widget import GameWidget
+from widgets.menu_widget import MenuWidget
 
 
 class MainWindow(QMainWindow):

@@ -3,27 +3,22 @@ from PyQt5.QtGui import QPixmap, QPainter, QColor, QMouseEvent, QFont, QPen
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtWidgets import QGridLayout
 
-from angle_provider import AngleProvider
+from special_providers.angle_provider import AngleProvider
 from animation_manager.animation_manager import AnimationManager
 from animation_manager.pausa_animation import PausaAnimation
 from animation_manager.tip_animation import TipAnimation
-from ball_pixmap_provider import BallPixmapProvider
+from special_providers.ball_pixmap_provider import BallPixmapProvider
 
-from conveyor_ball import ConveyorBall
-from end_game_lose_widget import EndGameLoseWidget
-from end_game_win_widget import EndGameWinWidget
-from flyingBall import FlyingBall
-from game_state import GameState
+from widgets.end_game_win_widget import EndGameWinWidget
+from widgets.end_game_lose_widget import EndGameLoseWidget
+from game_logic.game_state import GameState
 import math
-import random
 
-from game_levels.level2_river import Level2
-from menu_widgets.level_button import LevelButton
-from menu_widgets.menu_button import MenuButton
+from widgets.menu_button import MenuButton
 
-from mouse_tracker import MouseTracker
-from random_color_manager import RandomColorManager
-from task_reset_parameter import TaskResetParameter
+from widgets.mouse_tracker import MouseTracker
+from special_providers.random_color_provider import RandomColorManager
+import time
 
 
 class GameWidget(QWidget):
@@ -47,8 +42,8 @@ class GameWidget(QWidget):
         self.x = 1
         self.y = 1
         self.is_meta_menud = False
-        self.random_color_manager = RandomColorManager()
-        self.game_state = GameState(game_level)
+        self.game_state = GameState(game_level,
+                                    RandomColorManager(time.time()))
         self.game_state.set_animation_manager(self.animation_manager)
         self.grid = QGridLayout()
         self.canvas = QPixmap(800, 800)

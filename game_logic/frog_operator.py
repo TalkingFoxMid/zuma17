@@ -1,6 +1,5 @@
-from flyingBall import FlyingBall
-from random_color_manager import RandomColorManager
-from task_reset_parameter import TaskResetParameter
+from game_logic.flyingBall import FlyingBall
+from task_manager.task_reset_parameter import TaskResetParameter
 
 
 class FrogOperator:
@@ -9,7 +8,7 @@ class FrogOperator:
         self.balls_swap_parameter = 0
         self.balls_swap_parameter2 = 0
         self.balls_swap_parameter3 = 0
-        self.random_color_manager = RandomColorManager()
+        self.random_color_manager = game_state.random_color_manager
         self.first_ball_color = 'red'
         self.second_ball_color = 'red'
         self.third_ball_color = 'red'
