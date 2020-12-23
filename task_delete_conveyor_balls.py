@@ -14,14 +14,14 @@ class TaskDeleteConveyorBalls:
                 index1 = self.balls_conveyor.balls_list.index(self.balls_slice[0]) - 1
                 if index1 > 0:
                     self.balls_conveyor.balls_list[index1].hot = True
-            except IndexError:
+            except ValueError:
                 pass
             index2 = self.balls_conveyor.balls_list.index(self.balls_slice[-1]) + 1
 
             if index2 != len(self.balls_slice):
                 try:
                     self.balls_conveyor.balls_list[index2].hot = True
-                except IndexError:
+                except ValueError:
                     pass
             return
         for i in self.balls_slice:
