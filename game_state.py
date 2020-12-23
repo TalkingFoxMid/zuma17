@@ -1,5 +1,9 @@
 from balls_conveyor import BallsConveyor
+from flyingBall import FlyingBall
+from frog_operator import FrogOperator
+from random_color_manager import RandomColorManager
 from task_manager import TaskManager
+from task_reset_parameter import TaskResetParameter
 
 
 class GameState:
@@ -9,43 +13,44 @@ class GameState:
         self.game_level = game_level
         self.balls_conveyor = BallsConveyor(self, game_level)
         self.balls = []
+        self.frog_operator = FrogOperator(self)
         self.task_manager = TaskManager()
-        self.first_ball_color = 'red'
-        self.second_ball_color = 'red'
-        self.third_ball_color = 'red'
-        self.balls_swap_parameter = 0
-        self.balls_swap_parameter2 = 0
-        self.balls_swap_parameter3 = 0
+
         self.score = 0
-        self.change_balls_cooldown = 0
-        self.cooldown = 0
         self.lost = False
         self.game_ended_win = False
 
     def set_animation_manager(self, animation_manager):
         self.animation_manager = animation_manager
 
-    def is_cool_down(self):
-        return self.cooldown > 0
-
-    def get_angle(self):
-        return self.angle
-
-    def down_cooldowns(self):
-        if self.cooldown > 0:
-            self.cooldown -= 1
-        if self.change_balls_cooldown > 0:
-            self.change_balls_cooldown -= 1
-
-    def freeze_cooldown(self):
-        self.cooldown = 5
-
-    def freeze_change_cooldown(self):
-        self.change_balls_cooldown = 250
-
     def tick(self):
+        if len(self.balls_conveyor.balls_list) == 0 and self.balls_conveyor.no_balls_remain:
+            self.game_ended_win = True
         self.task_manager.task_tick()
-        self.down_cooldowns()
+        self.balls_conveyor.tick()
+        self.tick_flying_balls()
+        self.frog_operator.down_cooldowns()
+        self.balls_conveyor.place_balls()
+
+    def tick_flying_balls(self):
+
+        for i in self.balls:
+            if i.must_been_deleted:
+                self.balls.remove(i)
+        for i in self.balls:
+            i.tick()
+            self.balls_conveyor.try_to_inplace_ball(i)
+            if i.x > 800 or i.y > 800 or i.x < 0 or i.y < 0:
+                i.must_been_deleted = True
+
+    def shot_a_ball(self, angle):
+        self.frog_operator.shot_a_ball(angle)
+
+    def swap_balls(self):
+        self.frog_operator.swap_balls()
+
+    def change_balls(self):
+        self.frog_operator.change_balls()
 
     def add_task(self, task):
         self.task_manager.add_task(task)

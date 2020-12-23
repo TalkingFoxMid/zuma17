@@ -83,6 +83,7 @@ class BallsConveyor:
     def spawn_ball(self, ball):
         if self.last_ball is None:
             self.last_ball = ball
+        ball.x, ball.y = self.get_ball_position(ball)
         self.balls_list.append(ball)
 
     def spawn_random_ball(self):

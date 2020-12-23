@@ -3,6 +3,7 @@ from PyQt5.QtGui import QPixmap, QPainter, QColor, QMouseEvent, QFont, QPen
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtWidgets import QGridLayout
 
+from angle_provider import AngleProvider
 from animation_manager.animation_manager import AnimationManager
 from animation_manager.pausa_animation import PausaAnimation
 from animation_manager.tip_animation import TipAnimation
@@ -35,7 +36,7 @@ class GameWidget(QWidget):
         self.ball_pixmap_provider = BallPixmapProvider()
         self.main_window = main_window
         self.menu_widget = menu_widget
-
+        self.angle_provider = AngleProvider()
         self.game_level = game_level
         self.balls_float_animation = 0
         self.buttons = [
@@ -63,7 +64,6 @@ class GameWidget(QWidget):
         self.timer = QTimer()
         self.timer.timeout.connect(self.handle_timer)
         self.timer.start(40)
-        self.counter = 0
 
     def pause(self):
         self.animation_manager.add_animation(
@@ -82,83 +82,29 @@ class GameWidget(QWidget):
         self.balls_float_animation += 0.2
 
     def handle_timer(self):
-
         if self.game_state.game_ended_win:
             self.end_game_win()
-        if len(self.game_state.balls_conveyor.balls_list) == 0 and self.game_state.balls_conveyor.no_balls_remain:
-            self.game_state.game_ended_win = True
+
         if self.game_state.lost:
-            self.main_window.setCentralWidget(
-                EndGameLoseWidget(self.main_window,
-                                  self.menu_widget)
-            )
+            self.end_game_lose()
 
         if not self.is_paused:
-            self.add_balls_float_parameter()
+            self.add_balls_float_parameter()  # visual effect
             self.game_state.tick()
-            self.counter += 1
-            self.game_state.balls_conveyor.place_balls()
-            if self.x == 0:
-                if self.y > 0:
-                    self.angle = math.pi / 2
-                else:
-                    self.angle = -math.pi / 2
-            else:
-                self.angle = math.atan(self.y / self.x)
 
-                if self.x < 0:
-                    self.angle = math.atan(self.y / self.x) + math.pi
+        self.angle = self.angle_provider.get_angle(self.x, self.y)
 
         self.draw_game_state()
 
-    def shot_a_ball(self):
+    def left_click(self):
         self.main_window.setFocus()
-        self.game_state.balls_swap_parameter = 1
-        self.game_state.add_task(TaskResetParameter(self.game_state, True, False))
-        clr = self.game_state.first_ball_color
-        self.game_state.first_ball_color = self.game_state.second_ball_color
-        self.game_state.second_ball_color = self.game_state.third_ball_color
-        self.game_state.third_ball_color = self.random_color_manager.get_random_color(
-            self.game_state.balls_conveyor.get_color_distribution()
-        )
+        self.game_state.shot_a_ball(self.angle)
 
-        self.game_state.balls.append(FlyingBall(angle=self.angle,
-                                                color=clr))
-        self.game_state.next_color = self.random_color_manager.get_random_color()
+    def right_click(self):
+        self.game_state.swap_balls()
 
-    def swap_balls(self):
-
-        tmp = self.game_state.first_ball_color
-        self.game_state.first_ball_color = self.game_state.second_ball_color
-        self.game_state.second_ball_color = self.game_state.third_ball_color
-        self.game_state.third_ball_color = tmp
-        self.game_state.balls_swap_parameter = 1
-        self.game_state.balls_swap_parameter2 = 1
-
-        self.game_state.add_task(TaskResetParameter(self.game_state, True, True))
-
-    def change_balls(self):
-        if self.game_state.change_balls_cooldown > 0:
-            return
-        self.game_state.freeze_change_cooldown()
-        self.game_state.balls_swap_parameter3 = 1
-        self.game_state.first_ball_color = self.random_color_manager.get_random_color(
-            self.game_state.balls_conveyor.get_color_distribution()
-        )
-        self.game_state.second_ball_color = self.random_color_manager.get_random_color(
-            self.game_state.balls_conveyor.get_color_distribution()
-        )
-        self.game_state.third_ball_color = self.random_color_manager.get_random_color(
-            self.game_state.balls_conveyor.get_color_distribution()
-        )
-        self.game_state.add_task(
-            TaskResetParameter(
-                self.game_state,
-                False,
-                False,
-                True
-            )
-        )
+    def wheel_click(self):
+        self.game_state.change_balls()
 
     def mousePressEvent(self, a0: QMouseEvent) -> None:
 
@@ -166,15 +112,12 @@ class GameWidget(QWidget):
             for i in self.buttons:
                 if i.is_pressed:
                     i.on_click()
-        if self.game_state.is_cool_down():
-            return
-        self.game_state.freeze_cooldown()
         if a0.button() == 1:
-            self.shot_a_ball()
+            self.left_click()
         elif a0.button() == 2:
-            self.swap_balls()
+            self.right_click()
         elif a0.button() == 4:
-            self.change_balls()
+            self.wheel_click()
 
     def draw_game_state(self):
         self.label.setPixmap(QPixmap(self.game_level.map_resource))
@@ -203,27 +146,18 @@ class GameWidget(QWidget):
 
     def draw_flying_balls(self):
         bpp = self.ball_pixmap_provider
+
         for i in self.game_state.balls:
             if i.must_been_deleted:
-                self.game_state.balls.remove(i)
-        for i in self.game_state.balls:
-            if not self.is_paused:
-                i.tick()
-            if self.game_state.balls_conveyor.try_to_inplace_ball(
-                    i
-            ):
                 continue
-            if i.x > 800 or i.y > 800 or i.x < 0 or i.y < 0:
-                self.game_state.balls.remove(i)
-                continue
-
-            self.qp.drawPixmap(i.x - 21, i.y - 21, 42, 42,
+            self.qp.drawPixmap(i.x - 21,
+                               i.y - 21,
+                               42,
+                               42,
                                bpp.get_pixmap(i.color))
 
     def draw_conveyor_balls(self):
         bpp = self.ball_pixmap_provider
-        if not self.is_paused:
-            self.game_state.balls_conveyor.tick()
         for i in self.game_state.balls_conveyor.get_balls_list():
             x, y = self.game_state.balls_conveyor.get_ball_position(i)
 
@@ -234,41 +168,37 @@ class GameWidget(QWidget):
 
     def draw_central_frog(self):
         bpp = self.ball_pixmap_provider
-        angle = self.game_state.get_angle()
 
         self.qp.setPen(QPen(QColor("black"), 3))
         x, y = self.game_level.frog_position
         self.qp.drawPixmap(x - 35, y - 50, QPixmap("resources/frog.png"))
-        p = self.game_state.balls_swap_parameter
-        p2 = self.game_state.balls_swap_parameter2
-        p3 = 1 - self.game_state.balls_swap_parameter3
+        p = self.game_state.frog_operator.balls_swap_parameter
+        p2 = self.game_state.frog_operator.balls_swap_parameter2
+        p3 = 1 - self.game_state.frog_operator.balls_swap_parameter3
         self.qp.drawPixmap(x + 40 * p,
                            y - 60 * p,
                            p3 * (42 - 21 * p),
                            p3 * (42 - 21 * p),
-                           bpp.get_pixmap(self.game_state.first_ball_color))
+                           bpp.get_pixmap(self.game_state.frog_operator.first_ball_color))
 
         self.qp.drawPixmap(x + 40 - 80 * p,
                            y - 60 + 10 * math.sin(self.balls_float_animation),
                            p3 * 21,
                            p3 * 21,
-                           bpp.get_pixmap(self.game_state.second_ball_color))
+                           bpp.get_pixmap(self.game_state.frog_operator.second_ball_color))
 
         self.qp.drawPixmap(x - 40 + 40 * p2,
                            y - 60 + 60 * p2 + 10 * math.sin(self.balls_float_animation),
                            p3 * (21 - 21 * p + 42 * p2),
                            p3 * (21 - 21 * p + 42 * p2),
-                           bpp.get_pixmap(self.game_state.third_ball_color))
-        if self.game_state.change_balls_cooldown > 0:
-            self.qp.drawText(x, y + 80, f"{int(self.game_state.change_balls_cooldown / 25)}")
+                           bpp.get_pixmap(self.game_state.frog_operator.third_ball_color))
+        if self.game_state.frog_operator.change_balls_cooldown > 0:
+            self.qp.drawText(x, y + 80, f"{int(self.game_state.frog_operator.change_balls_cooldown / 25)}")
         self.qp.drawLine(x + 15, y + 15, x + 15 + 100 * math.cos(self.angle),
                          y + 15 + 100 * math.sin(self.angle))
 
     def back(self):
         self.main_window.setCentralWidget(type(self.main_window)())
-
-    def show_hide_exit_button(self):
-        self.buttons[0].hidden = not self.buttons[0].hidden
 
     def end_game_win(self):
         self.main_window.setCentralWidget(EndGameWinWidget(
@@ -279,11 +209,17 @@ class GameWidget(QWidget):
 
         ))
 
+    def end_game_lose(self):
+        self.main_window.setCentralWidget(
+            EndGameLoseWidget(self.main_window,
+                              self.menu_widget)
+        )
+
     @pyqtSlot(QPoint)
     def on_position_changed(self, pos):
         for i in self.buttons:
             x, y, w, h = i.get_geometry()
-            if pos.x() > x and pos.x() < x + w and pos.y() > y and pos.y() < y + h:
+            if x < pos.x() < x + w and y < pos.y() < y + h:
                 i.is_pressed = True
 
             else:

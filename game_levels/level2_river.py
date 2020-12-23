@@ -18,7 +18,7 @@ class Level2:
 
     def get_ball_position(self, ball):
         p = ball.parameter
-        if 0 < p <= 1:
+        if 0 <= p <= 1:
             ball.x, ball.y = 100, p * 700
         if 1 < p <= 1.14:
             ball.x, ball.y = 100 + 700 * (p - 1), 700
