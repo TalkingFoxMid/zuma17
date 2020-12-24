@@ -1,7 +1,5 @@
 import random
 
-from PyQt5.QtGui import QColor
-
 
 class RandomColorManager:
     def __init__(self, seed):
@@ -21,5 +19,3 @@ class RandomColorManager:
             y = color_distribution[3]
             return self.random.choice(r * ['red'] + g * ['blue'] + b * ['green'] + y * ['yellow'])
 
-    def get_qt_color_from_string(self, string):
-        return QColor(string)

@@ -1,6 +1,6 @@
 import math
 
-from animation_manager.points_animation import PointsAnimation
+
 from special_providers.color_distribution_provider import ColorDistributionProvider
 from game_logic.conveyor_ball import ConveyorBall
 from task_manager.task_delete_conveyor_balls import TaskDeleteConveyorBalls
@@ -107,11 +107,11 @@ class BallsConveyor:
         if right_edge - left_edge + 1 >= 3:
             mid = self.balls_list[int((right_edge + left_edge) / 2)]
 
-            self.game_state.animation_manager.add_animation(
-                PointsAnimation(mid.x,
+            self.game_state.animation_manager.add_points_animation(
+                mid.x,
                                 mid.y,
                                 10 * (right_edge - left_edge + 1),
-                                mid.color)
+                                mid.color
             )
             for i in self.balls_list[left_edge: right_edge + 1]:
                 i.unriverable = True

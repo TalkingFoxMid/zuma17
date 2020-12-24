@@ -5,9 +5,10 @@ from PyQt5.QtWidgets import QGridLayout
 
 from special_providers.angle_provider import AngleProvider
 from animation_manager.animation_manager import AnimationManager
-from animation_manager.pausa_animation import PausaAnimation
 from animation_manager.tip_animation import TipAnimation
 from special_providers.ball_pixmap_provider import BallPixmapProvider
+from task_manager.pausa_on_task import PausaOnTask
+from task_manager.task_manager import TaskManager
 
 from widgets.end_game_win_widget import EndGameWinWidget
 from widgets.end_game_lose_widget import EndGameLoseWidget
@@ -26,7 +27,9 @@ class GameWidget(QWidget):
 
     def __init__(self, game_level, main_window, menu_widget):
         self.is_paused = False
+        self.pausa_opacity = 1
         super().__init__()
+
         self.animation_manager = AnimationManager()
         self.ball_pixmap_provider = BallPixmapProvider()
         self.main_window = main_window
@@ -56,15 +59,20 @@ class GameWidget(QWidget):
         self.animation_manager.add_animation(
             TipAnimation()
         )
+        self.task_manager = TaskManager()
         self.timer = QTimer()
         self.timer.timeout.connect(self.handle_timer)
         self.timer.start(40)
 
     def pause(self):
-        self.animation_manager.add_animation(
-            PausaAnimation()
-        )
+
         self.is_paused = not self.is_paused
+        if self.is_paused:
+            self.task_manager.add_task(PausaOnTask(self))
+
+    def set_pausa_opacity(self, pausa_opacity):
+
+        self.pausa_opacity = pausa_opacity
 
     def draw_meta_menus(self):
         if self.is_meta_menud:
@@ -77,6 +85,7 @@ class GameWidget(QWidget):
         self.balls_float_animation += 0.2
 
     def handle_timer(self):
+        self.task_manager.task_tick()
         if self.game_state.game_ended_win:
             self.end_game_win()
 
@@ -125,6 +134,7 @@ class GameWidget(QWidget):
         self.draw_score()
         self.animation_manager.draw_animations(self.qp)
         self.draw_meta_menus()
+        self.draw_if_paused()
         self.qp.end()
         self.update()
 
@@ -160,6 +170,13 @@ class GameWidget(QWidget):
                                i.diameter,
                                i.diameter,
                                bpp.get_pixmap(i.color))
+
+    def draw_if_paused(self):
+        if not self.is_paused:
+            return
+        self.qp.setOpacity(self.pausa_opacity)
+        self.qp.drawPixmap(150, 100, 312 * 1.5, 153 * 1.5, QPixmap("resources/pausa_png.png"))
+        self.qp.setOpacity(1)
 
     def draw_central_frog(self):
         bpp = self.ball_pixmap_provider
