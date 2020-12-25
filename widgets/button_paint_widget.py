@@ -6,6 +6,8 @@ from widgets.mouse_tracker import MouseTracker
 
 
 class ButtonPaintWidget(QWidget):
+    """Абстрактный виджет, который содержит необходимую логику
+    для отрисовки кнопок, трека положения курсора, отрисовки заднего фона"""
     def __init__(self):
         super().__init__()
 
@@ -39,7 +41,7 @@ class ButtonPaintWidget(QWidget):
     def on_position_changed(self, pos):
         for i in self.buttons:
             x, y, w, h = i.get_geometry()
-            if pos.x() > x and pos.x() < x + w and pos.y() > y and pos.y() < y + h:
+            if x < pos.x() < x + w and y < pos.y() < y + h:
                 i.is_pressed = True
             else:
                 i.is_pressed = False

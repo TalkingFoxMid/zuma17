@@ -2,6 +2,9 @@ from PyQt5.QtGui import QPixmap
 
 
 class BallPixmapProvider:
+    """К нему обращается отрисовщик шариков для получения
+    их картинок,
+    чтобы не читать лишний раз с диска"""
     def __init__(self):
         self.pixmap_dictionary = {
             "red": QPixmap("resources/red_ball.png"),

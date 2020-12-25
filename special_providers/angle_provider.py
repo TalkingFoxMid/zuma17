@@ -2,6 +2,8 @@ import math
 
 
 class AngleProvider:
+    """По заданным x и y от начала координат, считает угол
+    радиус вектора"""
     def get_angle(self, x, y):
         if x == 0:
             if y > 0:

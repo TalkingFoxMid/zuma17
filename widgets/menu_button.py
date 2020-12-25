@@ -1,4 +1,5 @@
 class MenuButton:
+    """Обычная кнопка из варкрафта"""
     def __init__(self, left, up, text_resource, on_click):
         self.left = left
         self.up = up

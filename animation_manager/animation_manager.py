@@ -6,6 +6,8 @@ class AnimationManager:
         self.animations.append(animation)
 
     def draw_animations(self, qp):
+        """Отрисовывает все анимации из списка. Удаляет, если они
+        закончились. """
         for i in self.animations:
             if i.ended:
                 self.animations.remove(i)

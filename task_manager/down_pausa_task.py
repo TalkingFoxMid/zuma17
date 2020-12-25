@@ -1,4 +1,5 @@
 class DownPausaTask:
+    """Медленно делает паузу прозрачной"""
     def __init__(self, game_widget):
         self.game_widget = game_widget
         self.remain = 10

@@ -3,6 +3,8 @@ from task_manager.task_reset_parameter import TaskResetParameter
 
 
 class FrogOperator:
+    """Инкапсулирует перезарядки, возможности игрока управлять главной
+    лягухой"""
     def __init__(self, game_state):
         self.gs = game_state
         self.balls_swap_parameter = 0

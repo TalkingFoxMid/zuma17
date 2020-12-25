@@ -3,6 +3,8 @@ class TaskResetParameter:
                  is_reset_shot_swap,
                  is_reset_swap_swap,
                  is_reset_change_swap=False):
+        """Возвращает на место смещения шариков (анимация при выстреле и
+        свапе) """
         self.remain = 5
         self.is_reset_shot_swap = is_reset_shot_swap
         self.is_reset_swap_swap = is_reset_swap_swap

@@ -26,6 +26,7 @@ import time
 
 
 class GameWidget(QWidget):
+    """Виджет самой игры"""
     positionChanged = pyqtSignal(QPoint)
 
     def __init__(self, game_level, main_window, menu_widget):
@@ -103,8 +104,10 @@ class GameWidget(QWidget):
     def left_click(self):
         self.main_window.setFocus()
         self.game_state.shot_a_ball(self.angle)
+
     def set_pausa_opacity(self, pausa_opacity):
         self.pausa_opacity = pausa_opacity
+
     def right_click(self):
         self.game_state.swap_balls()
 
@@ -177,7 +180,8 @@ class GameWidget(QWidget):
             return
         self.qp.setOpacity(self.pausa_opacity)
 
-        self.qp.drawPixmap(150, 100, 312 * 1.5, 180 * 1.5, QPixmap("resources/pausa_png.png"))
+        self.qp.drawPixmap(150, 100, 312 * 1.5, 180 * 1.5,
+                           QPixmap("resources/pausa_png.png"))
         self.qp.setOpacity(1)
 
     def draw_central_frog(self):
@@ -193,21 +197,30 @@ class GameWidget(QWidget):
                            y - 60 * p,
                            p3 * (42 - 21 * p),
                            p3 * (42 - 21 * p),
-                           bpp.get_pixmap(self.game_state.frog_operator.first_ball_color))
+                           bpp.get_pixmap(
+                               self.game_state.frog_operator.first_ball_color))
 
         self.qp.drawPixmap(x + 40 - 80 * p,
                            y - 60 + 10 * math.sin(self.balls_float_animation),
                            p3 * 21,
                            p3 * 21,
-                           bpp.get_pixmap(self.game_state.frog_operator.second_ball_color))
+                           bpp.get_pixmap(
+                               self.game_state.frog_operator.
+                               second_ball_color))
 
         self.qp.drawPixmap(x - 40 + 40 * p2,
-                           y - 60 + 60 * p2 + 10 * math.sin(self.balls_float_animation),
+                           y - 60 + 60 * p2 + 10 * math.sin(
+                               self.balls_float_animation),
                            p3 * (21 - 21 * p + 42 * p2),
                            p3 * (21 - 21 * p + 42 * p2),
-                           bpp.get_pixmap(self.game_state.frog_operator.third_ball_color))
+                           bpp.get_pixmap(
+                               self.game_state.frog_operator.third_ball_color))
         if self.game_state.frog_operator.change_balls_cooldown > 0:
-            self.qp.drawText(x, y + 80, f"{int(self.game_state.frog_operator.change_balls_cooldown / 25)}")
+            self.qp.drawText(x, y + 80,
+                             str(
+                                 int(self.game_state.frog_operator.
+                                     change_balls_cooldown / 25)
+                             ))
         self.qp.drawLine(x + 15, y + 15, x + 15 + 100 * math.cos(self.angle),
                          y + 15 + 100 * math.sin(self.angle))
 

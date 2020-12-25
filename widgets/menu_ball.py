@@ -2,6 +2,7 @@ import math
 
 
 class MenuBall:
+    """Шарик, который летает в меню, могут сталкиваться"""
     def __init__(self, x, y, color, speed_x, speed_y):
         self.x = x
         self.y = y

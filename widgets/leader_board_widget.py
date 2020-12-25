@@ -6,6 +6,7 @@ from widgets.menu_button import MenuButton
 
 
 class LeaderBoardWidget(ButtonPaintWidget):
+    """Виджет таблицы лидеров"""
     def __init__(self, main_window,
                  menu_widget,
                  leader_board_manager):

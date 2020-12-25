@@ -1,4 +1,5 @@
 class ConveyorBall:
+    """Инкапсулирует состояние шарика на конвеере"""
     def __init__(self, color, parameter):
         self.parameter = parameter
         self.color = color

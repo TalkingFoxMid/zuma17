@@ -2,6 +2,7 @@ import math
 
 
 class FlyingBall:
+    """Инкапсулирует состояние шарика в полёте"""
     def __init__(self, x=415, y=415, angle=0, color="red"):
         super().__init__()
         self.x = x

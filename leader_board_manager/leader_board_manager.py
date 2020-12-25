@@ -1,4 +1,5 @@
 import json
+import hashlib
 
 
 class LeaderBoardManager:
@@ -10,17 +11,35 @@ class LeaderBoardManager:
             self.results += [["", 0]]
 
     def load_from_file(self):
-        txt = self.fs_provider.read_from_file(
-            "leaderboard"
+        leadboard = self.fs_provider.read_from_file(
+            "leaderboard", "r"
         )
-
-        if len(txt) == 0:
+        hash = self.fs_provider.read_from_file(
+            "lb.hash", "rb"
+        )
+        if len(leadboard) == 0 or len(hash) == 0:
             return
-        self.results = json.loads(txt)
+        results = json.loads(leadboard)
+        new_hash = self.get_results_hash(results)
+        print(new_hash)
+        if (hash != new_hash):
+            return
+        else:
+            self.results = results
+
+    def get_results_hash(self, results):
+        return hashlib.md5(
+            (json.dumps([results]) + "SALTo_mortale").encode()).digest()
 
     def save_to_file(self):
+        hash = self.get_results_hash(self.results)
         self.fs_provider.write_in_file("leaderboard",
-                                       json.dumps(self.results))
+                                       json.dumps(self.results),
+                                       "w"
+                                       )
+        self.fs_provider.write_in_file("lb.hash",
+                                       hash,
+                                       "wb")
 
     def get_level_result(self, level):
         if len(self.results) < level:
@@ -28,7 +47,7 @@ class LeaderBoardManager:
         return self.results[level - 1]
 
     def set_result(self, result):
-        if self.results[result[0] - 1] < result[1]:
+        if self.results[result[0] - 1][1] < result[1][1]:
             self.results[result[0] - 1] = result[1]
         self.save_to_file()
 

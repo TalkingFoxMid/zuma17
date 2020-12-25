@@ -9,6 +9,7 @@ from widgets.mouse_tracker import MouseTracker
 
 
 class EndGameLoseWidget(ButtonPaintWidget):
+    """Виджет, в случае проигрыша"""
     def __init__(self, main_window, menu_widget):
         super().__init__()
         self.main_window = main_window

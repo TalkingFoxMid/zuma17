@@ -1,8 +1,13 @@
 class FsProvider:
-    def write_in_file(self, file_name, text):
-        with open(file_name, "w") as f:
-            return text
+    """Пишет в файл, читает из файла"""
+    def write_in_file(self, file_name, text, mode):
 
-    def read_from_file(self, file_name):
-        with open(file_name, "r") as f:
-            return f.read()
+        with open(file_name, mode) as f:
+            print(file_name)
+            f.write(text)
+
+    def read_from_file(self, file_name, mode):
+        with open(file_name, mode) as f:
+            x = f.read()
+
+            return x

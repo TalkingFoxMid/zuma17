@@ -2,6 +2,7 @@ from PyQt5.QtCore import QEvent, pyqtSignal, QObject, QPoint
 
 
 class MouseTracker(QObject):
+    """Трекает мышку"""
     positionChanged = pyqtSignal(QPoint)
 
     def __init__(self, widget):

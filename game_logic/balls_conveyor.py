@@ -1,12 +1,14 @@
 import math
 
 from animation_manager.points_animation import PointsAnimation
-from special_providers.color_distribution_provider import ColorDistributionProvider
+from special_providers.color_distribution_provider import\
+    ColorDistributionProvider
 from game_logic.conveyor_ball import ConveyorBall
 from task_manager.task_delete_conveyor_balls import TaskDeleteConveyorBalls
 
 
 class BallsConveyor:
+    """Реализует логику поведения шариков на конвеере"""
     def __init__(self, game_state, maze_level):
         self.balls_list = []
         self.color_distribution_provider = ColorDistributionProvider()
@@ -42,13 +44,15 @@ class BallsConveyor:
             if i == len(self.balls_list) - 1:
                 self.balls_list[i].parameter += 0.005 * self.speed
                 continue
-            distance = self.balls_list[i].parameter - self.balls_list[i + 1].parameter
+            distance = (self.balls_list[i].parameter -
+                        self.balls_list[i + 1].parameter)
             if distance < 0.08:
                 self.balls_list[i].parameter += ((0.08 - distance) * 0.3)
                 if self.balls_list[i].hot and self.balls_list[i + 1].hot:
+
                     b1 = self.balls_list[i]
                     b2 = self.balls_list[i + 1]
-                    self.release_balls(i)
+                    self.release_balls(i, True)
                     b1.hot = False
                     b2.hot = False
             else:
@@ -89,7 +93,7 @@ class BallsConveyor:
             else:
                 self.no_balls_remain = True
 
-    def release_balls(self, index):
+    def release_balls(self, index, hotted = False):
         color = self.balls_list[index].color
         right_edge = index
         left_edge = index
@@ -105,6 +109,8 @@ class BallsConveyor:
             break
 
         if right_edge - left_edge + 1 >= 3:
+            if hotted:
+                print("DELETED_MAXIMUX")
             mid = self.balls_list[int((right_edge + left_edge) / 2)]
 
             self.game_state.animation_manager.add_animation(

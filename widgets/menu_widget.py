@@ -51,14 +51,21 @@ class MenuWidget(QWidget):
         self.timer.start(40)
         self.balls = []
         self.buttons_main_menu = [
-            MenuButton(199, 424, "resources/play.png", self.select_level),
-            MenuButton(199, 564, "resources/leader_board_text.png", self.open_leader_board)
+            MenuButton(199, 424, "resources/play.png",
+                       self.select_level),
+            MenuButton(199, 564, "resources/leader_board_text.png",
+                       self.open_leader_board)
         ]
         self.buttons = self.buttons_main_menu
         self.level_buttons = [
-            LevelButton(100, 100, "resources/text_1.png", partial(self.start_level, Level1)),
-            LevelButton(300, 100, "resources/text_2.png", partial(self.start_level, Level2)),
-            LevelButton(500, 100, "resources/text_3.png", partial(self.start_level, Level3))
+            LevelButton(100, 100, "resources/text_1.png",
+                        partial(self.start_level, Level1)),
+
+            LevelButton(300, 100, "resources/text_2.png",
+                        partial(self.start_level, Level2)),
+
+            LevelButton(500, 100, "resources/text_3.png",
+                        partial(self.start_level, Level3))
         ]
 
     @pyqtSlot(QPoint)
@@ -66,7 +73,10 @@ class MenuWidget(QWidget):
         self.mouse_move_balls(pos)
         for i in self.buttons:
             x, y, w, h = i.get_geometry()
-            if pos.x() > x and pos.x() < x + w and pos.y() > y and pos.y() < y + h:
+            if (pos.x() > x
+                    and pos.x() < x + w
+                    and pos.y() > y
+                    and pos.y() < y + h):
                 i.is_pressed = True
             else:
                 i.is_pressed = False
@@ -78,8 +88,10 @@ class MenuWidget(QWidget):
         self.qp = QPainter(self.label.pixmap())
         self.qp.drawPixmap(-100 + self.ball_offset_x,
                            -100 + self.ball_offset_y,
-                           1200 + self.ball_offset_x * 2 + self.ball_offset_y * 2,
-                           1200 + self.ball_offset_x * 2 + self.ball_offset_y * 2,
+                           (1200 + self.ball_offset_x * 2
+                            + self.ball_offset_y * 2),
+                           (1200 + self.ball_offset_x * 2
+                            + self.ball_offset_y * 2),
                            QPixmap(
                                self.gif_provider.get_res(self.tick)
                            ))
@@ -100,12 +112,16 @@ class MenuWidget(QWidget):
         c2 = math.cos(self.iter + 2 * math.pi / 3)
         c3 = math.cos(self.iter + 4 * math.pi / 3)
 
-        self.qp.drawPixmap(555, 555, 250, 250, QPixmap("resources/metasploit.png"))
+        self.qp.drawPixmap(555, 555, 250, 250,
+                           QPixmap("resources/metasploit.png"))
 
         self.qp.drawPixmap(630, 630, 100, 100, QPixmap("resources/frog.png"))
-        self.qp.drawPixmap(660 + 80 * s1, 660 + 80 * c1, 42, 42, QPixmap("resources/red_ball.png"))
-        self.qp.drawPixmap(660 + 80 * s2, 660 + 80 * c2, 42, 42, QPixmap("resources/blue_ball.png"))
-        self.qp.drawPixmap(660 + 80 * s3, 660 + 80 * c3, 42, 42, QPixmap("resources/green_ball.png"))
+        self.qp.drawPixmap(660 + 80 * s1, 660 + 80 * c1, 42, 42,
+                           QPixmap("resources/red_ball.png"))
+        self.qp.drawPixmap(660 + 80 * s2, 660 + 80 * c2, 42, 42,
+                           QPixmap("resources/blue_ball.png"))
+        self.qp.drawPixmap(660 + 80 * s3, 660 + 80 * c3, 42, 42,
+                           QPixmap("resources/green_ball.png"))
 
     def mousePressEvent(self, a0):
         for i in self.buttons:
@@ -133,8 +149,16 @@ class MenuWidget(QWidget):
         rnd = random.randint(0, 10)
         if rnd > 7:
             rnd2 = random.randint(200, 1400)
-            self.balls.append(MenuBall(rnd2, -200, self.random_color_manager.get_random_color(), -10, 10))
-            self.balls.append(MenuBall(rnd2 - 400, 1000, self.random_color_manager.get_random_color(), 10, -10))
+            self.balls.append(MenuBall(rnd2, -200,
+                                       self.random_color_manager
+                                       .get_random_color(),
+                                       -5,
+                                       5))
+            self.balls.append(MenuBall(rnd2 - 400, 1000,
+                                       self.random_color_manager
+                                       .get_random_color(),
+                                       5,
+                                       -5))
         for i in self.balls:
             if i.x < -300 or i.x > 1100 or i.y < -300 or i.y > 1100:
                 self.balls.remove(i)
@@ -164,7 +188,8 @@ class MenuWidget(QWidget):
 
     def paint_balls(self):
         for i in self.balls:
-            self.qp.drawPixmap(i.x - 21 - self.ball_offset_x, i.y - 21 - self.ball_offset_y, 42, 42,
+            self.qp.drawPixmap(i.x - 21 - self.ball_offset_x,
+                               i.y - 21 - self.ball_offset_y, 42, 42,
                                self.ball_pixmap_provider.get_pixmap(i.color))
 
     def paint_buttons(self):

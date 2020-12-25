@@ -1,4 +1,5 @@
 class ColorDistributionProvider:
+    """Получает распределение цветов по заданному массиву шариков"""
     def get_color_distribution(self, balls_list):
         color_distribution = [0, 0, 0, 0]
         colors = ['red', 'blue', 'green', 'yellow']

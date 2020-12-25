@@ -1,6 +1,8 @@
 class MenuGifResProvider:
+    """Предоставляет в зависимости от пройденного в главном
+    меню количества тиков - состояние гифки"""
     def get_res(self, tick):
-        tick = int(tick  / 2)
+        tick = int(tick / 2)
         frame = tick % 43
 
         frame = str(frame)

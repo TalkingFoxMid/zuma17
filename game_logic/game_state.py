@@ -1,13 +1,15 @@
+from animation_manager.animation_manager import AnimationManager
 from game_logic.balls_conveyor import BallsConveyor
 from game_logic.frog_operator import FrogOperator
 from task_manager.task_manager import TaskManager
 
 
 class GameState:
+    """Инкапсулирует всю игровую логику"""
     def __init__(self, game_level, random_color_manager):
         self.angle = 0
         self.random_color_manager = random_color_manager
-        self.animation_manager = None
+        self.animation_manager = AnimationManager()
         self.game_level = game_level
 
         self.balls = []
@@ -23,7 +25,10 @@ class GameState:
         self.animation_manager = animation_manager
 
     def tick(self):
-        if len(self.balls_conveyor.balls_list) == 0 and self.balls_conveyor.no_balls_remain:
+        if (
+                len(self.balls_conveyor.balls_list) == 0
+                and self.balls_conveyor.no_balls_remain
+        ):
             self.game_ended_win = True
         self.task_manager.task_tick()
         self.balls_conveyor.tick()

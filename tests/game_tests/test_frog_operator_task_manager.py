@@ -1,28 +1,56 @@
+import math
+
 from game_logic.game_state import GameState
 from game_levels.level1_river import Level1
+from game_levels.level2_river import Level2
 from special_providers.random_color_provider import RandomColorManager
+import unittest
 
 
-def test_frog_operator_task_manager():
-    game_state = GameState(Level1(),
-                           RandomColorManager(17))
-    for i in range(3):
-        game_state.frog_operator.shot_a_ball(0)
-        game_state.tick()
-    for i in range(5):
-        game_state.tick()
+class TestFrogOperatorTaskManager(unittest.TestCase):
+    def test_frog_operator_shot_balls_placing(self):
+        game_state = GameState(Level1(),
+                               RandomColorManager(17))
+        for i in range(121):
+            game_state.shot_a_ball(1)
+            game_state.tick()
+        assert [i.x for i in game_state.balls_conveyor.balls_list][:5] == \
+               [386.82811800632334, 338.2810698121899,
+                289.7447066270861, 241.2829164862018,
+                192.96513676485594]
 
-    game_state.frog_operator.swap_balls()
-    assert game_state.frog_operator.balls_swap_parameter2 == 1
-    game_state.tick()
-    assert game_state.frog_operator.balls_swap_parameter2 == 0.8
-    for i in range(4):
-        game_state.tick()
-    assert game_state.frog_operator.first_ball_color == "red"
-    assert game_state.frog_operator.second_ball_color == "yellow"
-    assert game_state.frog_operator.third_ball_color == "red"
-    assert game_state.frog_operator.balls_swap_parameter2 == 0
-    game_state.frog_operator.change_balls()
-    assert game_state.frog_operator.first_ball_color == "green"
-    assert game_state.frog_operator.second_ball_color == "green"
-    assert game_state.frog_operator.third_ball_color == "green"
+    def test_frog_operator_balls_swaping(self):
+        game_state = GameState(Level1(),
+                               RandomColorManager(21))
+        for i in range(121):
+            game_state.shot_a_ball(1)
+            game_state.swap_balls()
+            game_state.tick()
+        assert [game_state.frog_operator.first_ball_color,
+                game_state.frog_operator.second_ball_color,
+                game_state.frog_operator.third_ball_color] == ["red", "blue",
+                                                               "blue"]
+
+    def test_frog_operator_change_balls(self):
+        game_state = GameState(Level2(),
+                               RandomColorManager(21))
+        for i in range(121):
+            game_state.shot_a_ball(1)
+            game_state.change_balls()
+            game_state.tick()
+        assert [game_state.frog_operator.first_ball_color,
+                game_state.frog_operator.second_ball_color,
+                game_state.frog_operator.third_ball_color] == ["blue", "red",
+                                                               "yellow"]
+
+    def test_frog_shot_combo(self):
+        game_state = GameState(Level2(),
+                               RandomColorManager(1))
+        for i in range(300):
+            game_state.tick()
+            game_state.frog_operator.shot_a_ball(math.pi)
+        assert ([i.color for i in
+                 game_state.balls_conveyor.balls_list[:10]]
+                == ['blue', 'yellow', 'blue', 'green',
+                    'yellow', 'red', 'blue', 'green', 'green', 'blue']
+                )
