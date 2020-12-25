@@ -11,8 +11,9 @@ from widgets.menu_widget import MenuWidget
 
 
 class MainWindow(QMainWindow):
-    BACKSPACE_KEY_ID = 16777219
-    ESC_KEY_ID = 16777216
+    BACKSPACE_KEY_ID = 16777216
+    ESC_KEY_ID = 16777219
+
     def __init__(self):
         super().__init__()
         QSound("resources/music.mp3").play()

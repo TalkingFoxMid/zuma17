@@ -21,6 +21,7 @@ class TestLeaderBoard(unittest.TestCase):
         lb.set_result([1, ["lol", 280]])
         lb.set_result([1, ["tupple", 280]])
         assert lb.get_level_result(1)[0] == "lol"
+
     def test_leader_board_set_better_result(self):
         lb = LeaderBoardManager(TestFsProvider())
         lb.set_result([1, ["lol", 280]])
