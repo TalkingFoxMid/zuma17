@@ -8,7 +8,7 @@ class TipAnimation:
 
     def draw(self, qp):
         qp.setOpacity(self.get_opacity())
-        qp.drawPixmap(400, 600, 300, 100, QPixmap("resources/tip.png"))
+        qp.drawPixmap(300, 000, 400, 250, QPixmap("resources/tip.png"))
         qp.setOpacity(1)
 
     def get_opacity(self):

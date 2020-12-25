@@ -1,8 +1,9 @@
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QKeyEvent
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QSound
 from PyQt5.QtWidgets import *
 import sys
+
 
 from widgets.end_game_win_widget import EndGameWinWidget
 from widgets.game_widget import GameWidget
@@ -12,13 +13,15 @@ from widgets.menu_widget import MenuWidget
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
+        QSound("resources/music.mp3").play()
         self.url = QUrl.fromLocalFile("resources/music.mp3")
         self.content = QMediaContent(self.url)
         self.player = QMediaPlayer()
         self.player.setMedia(self.content)
-        self.player.play()
+
         self.menu_widget = MenuWidget(self)
+
+        self.player.play()
         self.setCentralWidget(self.menu_widget)
         self.setGeometry(0, 0, 800, 800)
 

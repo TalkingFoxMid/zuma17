@@ -11,6 +11,7 @@ from game_levels.level1_river import Level1
 from game_levels.level2_river import Level2
 from game_levels.level3_river import Level3
 from special_providers.fs_provider import FsProvider
+from special_providers.menu_gif_res_provider import MenuGifResProvider
 from widgets.game_widget import GameWidget
 from leader_board_manager.leader_board_manager import LeaderBoardManager
 from widgets.leader_board_widget import LeaderBoardWidget
@@ -37,6 +38,8 @@ class MenuWidget(QWidget):
         self.setLayout(self.layout)
         self.label = QLabel()
         self.iter = 0
+        self.tick = 0
+        self.gif_provider = MenuGifResProvider()
         self.label.setPixmap(QPixmap("resources/zuma_menu.png"))
         self.layout.addWidget(self.label)
         self.random_color_manager = RandomColorManager(time.time())
@@ -69,15 +72,17 @@ class MenuWidget(QWidget):
                 i.is_pressed = False
 
     def handle_timer(self):
-
+        self.tick += 1
         self.iter += 0.1
         self.label.setPixmap(QPixmap(800, 800))
         self.qp = QPainter(self.label.pixmap())
         self.qp.drawPixmap(-100 + self.ball_offset_x,
                            -100 + self.ball_offset_y,
-                           1200 + self.ball_offset_x * 4 + self.ball_offset_y * 4,
-                           1200 + self.ball_offset_x * 4 + self.ball_offset_y * 4,
-                           QPixmap("resources/zuma_menu.png"))
+                           1200 + self.ball_offset_x * 2 + self.ball_offset_y * 2,
+                           1200 + self.ball_offset_x * 2 + self.ball_offset_y * 2,
+                           QPixmap(
+                               self.gif_provider.get_res(self.tick)
+                           ))
 
         self.paint_buttons()
         self.paint_balls()

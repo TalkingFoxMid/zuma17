@@ -3,8 +3,8 @@ class LevelButton:
         self.left = left
         self.up = up
         self.on_click = on_click
-        self.width = 135
-        self.height = 98
+        self.width = 200
+        self.height = 150
         self.is_pressed = False
         self.hidden = False
         self.text_resource = text_resource

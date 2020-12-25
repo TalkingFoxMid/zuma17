@@ -1,3 +1,5 @@
+import random
+
 from PyQt5.QtCore import QTimer, pyqtSignal, QPoint, pyqtSlot
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QMouseEvent, QFont, QPen
 from PyQt5.QtWidgets import QWidget, QLabel
@@ -5,9 +7,11 @@ from PyQt5.QtWidgets import QGridLayout
 
 from special_providers.angle_provider import AngleProvider
 from animation_manager.animation_manager import AnimationManager
-from animation_manager.pausa_animation import PausaAnimation
 from animation_manager.tip_animation import TipAnimation
 from special_providers.ball_pixmap_provider import BallPixmapProvider
+from task_manager.down_pausa_task import DownPausaTask
+from task_manager.task_manager import TaskManager
+from task_manager.up_pausa_task import UpPausaTask
 
 from widgets.end_game_win_widget import EndGameWinWidget
 from widgets.end_game_lose_widget import EndGameLoseWidget
@@ -27,6 +31,7 @@ class GameWidget(QWidget):
     def __init__(self, game_level, main_window, menu_widget):
         self.is_paused = False
         super().__init__()
+
         self.animation_manager = AnimationManager()
         self.ball_pixmap_provider = BallPixmapProvider()
         self.main_window = main_window
@@ -34,11 +39,13 @@ class GameWidget(QWidget):
         self.angle_provider = AngleProvider()
         self.game_level = game_level
         self.balls_float_animation = 0
+        self.pausa_opacity = 0
         self.buttons = [
             MenuButton(200, 400, "resources/kadilo.png", self.back),
             MenuButton(200, 600, "resources/zavarudo.png", self.pause)
 
         ]
+        self.task_manager = TaskManager()
         self.x = 1
         self.y = 1
         self.is_meta_menud = False
@@ -61,10 +68,11 @@ class GameWidget(QWidget):
         self.timer.start(40)
 
     def pause(self):
-        self.animation_manager.add_animation(
-            PausaAnimation()
-        )
         self.is_paused = not self.is_paused
+        if self.is_paused:
+            self.task_manager.add_task(UpPausaTask(self))
+        else:
+            self.task_manager.add_task(DownPausaTask(self))
 
     def draw_meta_menus(self):
         if self.is_meta_menud:
@@ -77,6 +85,7 @@ class GameWidget(QWidget):
         self.balls_float_animation += 0.2
 
     def handle_timer(self):
+        self.task_manager.task_tick()
         if self.game_state.game_ended_win:
             self.end_game_win()
 
@@ -94,7 +103,8 @@ class GameWidget(QWidget):
     def left_click(self):
         self.main_window.setFocus()
         self.game_state.shot_a_ball(self.angle)
-
+    def set_pausa_opacity(self, pausa_opacity):
+        self.pausa_opacity = pausa_opacity
     def right_click(self):
         self.game_state.swap_balls()
 
@@ -125,6 +135,7 @@ class GameWidget(QWidget):
         self.draw_score()
         self.animation_manager.draw_animations(self.qp)
         self.draw_meta_menus()
+        self.draw_pausa()
         self.qp.end()
         self.update()
 
@@ -160,6 +171,14 @@ class GameWidget(QWidget):
                                i.diameter,
                                i.diameter,
                                bpp.get_pixmap(i.color))
+
+    def draw_pausa(self):
+        if not self.is_paused:
+            return
+        self.qp.setOpacity(self.pausa_opacity)
+
+        self.qp.drawPixmap(150, 100, 312 * 1.5, 180 * 1.5, QPixmap("resources/pausa_png.png"))
+        self.qp.setOpacity(1)
 
     def draw_central_frog(self):
         bpp = self.ball_pixmap_provider
