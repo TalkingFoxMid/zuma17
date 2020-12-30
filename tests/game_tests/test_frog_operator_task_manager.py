@@ -26,10 +26,10 @@ class TestFrogOperatorTaskManager(unittest.TestCase):
             game_state.shot_a_ball(1)
             game_state.swap_balls()
             game_state.tick()
-        assert [game_state.frog_operator.first_ball_color,
-                game_state.frog_operator.second_ball_color,
-                game_state.frog_operator.third_ball_color] == ["red", "blue",
-                                                               "blue"]
+        assert ([game_state.frog_operator.first_ball_color,
+                 game_state.frog_operator.second_ball_color,
+                 game_state.frog_operator.third_ball_color]
+                == ['red', 'green', 'red'])
 
     def test_frog_operator_change_balls(self):
         game_state = GameState(Level2(),
@@ -38,10 +38,10 @@ class TestFrogOperatorTaskManager(unittest.TestCase):
             game_state.shot_a_ball(1)
             game_state.change_balls()
             game_state.tick()
-        assert [game_state.frog_operator.first_ball_color,
-                game_state.frog_operator.second_ball_color,
-                game_state.frog_operator.third_ball_color] == ["blue", "red",
-                                                               "yellow"]
+        assert ([game_state.frog_operator.first_ball_color,
+                 game_state.frog_operator.second_ball_color,
+                 game_state.frog_operator.third_ball_color]
+                == ['blue', 'yellow', 'yellow'])
 
     def test_frog_shot_combo(self):
         game_state = GameState(Level2(),
@@ -49,8 +49,6 @@ class TestFrogOperatorTaskManager(unittest.TestCase):
         for i in range(300):
             game_state.tick()
             game_state.frog_operator.shot_a_ball(math.pi)
-        assert ([i.color for i in
-                 game_state.balls_conveyor.balls_list[:10]]
-                == ['blue', 'yellow', 'blue', 'green',
-                    'yellow', 'red', 'blue', 'green', 'green', 'blue']
-                )
+        assert ([i.color for i in game_state.balls_conveyor.balls_list[:10]]
+                == ['red', 'green', 'blue', 'red', 'yellow', 'yellow',
+                    'green', 'yellow', 'blue', 'red'])

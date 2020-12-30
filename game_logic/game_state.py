@@ -2,10 +2,12 @@ from animation_manager.animation_manager import AnimationManager
 from game_logic.balls_conveyor import BallsConveyor
 from game_logic.frog_operator import FrogOperator
 from task_manager.task_manager import TaskManager
+from task_manager.task_normalize_space import TaskNormalizeSpace
 
 
 class GameState:
     """Инкапсулирует всю игровую логику"""
+
     def __init__(self, game_level, random_color_manager):
         self.angle = 0
         self.random_color_manager = random_color_manager
@@ -15,7 +17,7 @@ class GameState:
         self.balls = []
         self.frog_operator = FrogOperator(self)
         self.task_manager = TaskManager()
-
+        self.time_space_opacity = 0
         self.score = 0
         self.lost = False
         self.game_ended_win = False
@@ -37,9 +39,20 @@ class GameState:
         self.balls_conveyor.place_balls()
 
     def tick_flying_balls(self):
-
         for i in self.balls:
+            if i.color == "TIME":
+                self.time_space_opacity += 0.01
+
+                if self.time_space_opacity > 1:
+                    self.time_space_opacity = 1
+                self.balls_conveyor.speed = 0
+                i.speed = 2
             if i.must_been_deleted:
+                if i.color == "TIME":
+                    self.task_manager.add_task(
+                        TaskNormalizeSpace(self)
+                    )
+                    self.balls_conveyor.speed = 1
                 self.balls.remove(i)
         for i in self.balls:
             i.tick()

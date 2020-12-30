@@ -1,5 +1,6 @@
 from game_logic.conveyor_ball import ConveyorBall
-from special_providers.color_distribution_provider import ColorDistributionProvider
+from special_providers.color_distribution_provider\
+    import ColorDistributionProvider
 
 color_distribution_provider = ColorDistributionProvider()
 

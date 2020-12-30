@@ -1,6 +1,6 @@
 class Level2:
     def __init__(self):
-        self.remain_balls = 40
+        self.remain_balls = 80
         self.frog_position = [390, 400]
         self.score_position = [389, 158]
         self.number = 2

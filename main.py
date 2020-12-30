@@ -13,14 +13,17 @@ from widgets.menu_widget import MenuWidget
 class MainWindow(QMainWindow):
     BACKSPACE_KEY_ID = 16777216
     ESC_KEY_ID = 16777219
+    T_KEY = 84
+    B_KEY = 66
 
     def __init__(self):
         super().__init__()
-        QSound("resources/music.mp3").play()
+
         random_music_provider = RandomMusicProvider()
         self.url = QUrl.fromLocalFile(random_music_provider.get_random_music())
         self.content = QMediaContent(self.url)
         self.player = QMediaPlayer()
+        self.player.setVolume(20)
         self.player.setMedia(self.content)
 
         self.menu_widget = MenuWidget(self)
@@ -30,6 +33,14 @@ class MainWindow(QMainWindow):
         self.setGeometry(0, 0, 800, 800)
 
     def keyPressEvent(self, a0: QKeyEvent) -> None:
+        if a0.key() == self.T_KEY and isinstance(
+                self.centralWidget(),
+                GameWidget):
+            self.centralWidget().push_time_ball_get()
+        if a0.key() == self.B_KEY and isinstance(
+                self.centralWidget(),
+                GameWidget):
+            self.centralWidget().push_boom_ball_get()
         if a0.key() == self.BACKSPACE_KEY_ID and isinstance(
                 self.centralWidget(),
                 GameWidget):

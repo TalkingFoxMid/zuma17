@@ -1,7 +1,8 @@
 import math
 
+from animation_manager.boom_animation import BoomAnimation
 from animation_manager.points_animation import PointsAnimation
-from special_providers.color_distribution_provider import\
+from special_providers.color_distribution_provider import \
     ColorDistributionProvider
 from game_logic.conveyor_ball import ConveyorBall
 from task_manager.task_delete_conveyor_balls import TaskDeleteConveyorBalls
@@ -9,6 +10,7 @@ from task_manager.task_delete_conveyor_balls import TaskDeleteConveyorBalls
 
 class BallsConveyor:
     """Реализует логику поведения шариков на конвеере"""
+
     def __init__(self, game_state, maze_level):
         self.balls_list = []
         self.color_distribution_provider = ColorDistributionProvider()
@@ -47,16 +49,17 @@ class BallsConveyor:
             distance = (self.balls_list[i].parameter -
                         self.balls_list[i + 1].parameter)
             if distance < 0.08:
-                self.balls_list[i].parameter += ((0.08 - distance) * 0.3)
+                self.balls_list[i].parameter += (
+                    ((0.08 - distance) * 0.3)
+                )
                 if self.balls_list[i].hot and self.balls_list[i + 1].hot:
-
                     b1 = self.balls_list[i]
                     b2 = self.balls_list[i + 1]
                     self.release_balls(i, True)
                     b1.hot = False
                     b2.hot = False
             else:
-                self.balls_list[i].parameter -= 0.005
+                self.balls_list[i].parameter -= 0.005 * self.speed
 
     def can_ball_go(self, ball_index):
         if self.balls_list[ball_index].unriverable:
@@ -93,7 +96,7 @@ class BallsConveyor:
             else:
                 self.no_balls_remain = True
 
-    def release_balls(self, index, hotted = False):
+    def release_balls(self, index, hotted=False):
         color = self.balls_list[index].color
         right_edge = index
         left_edge = index
@@ -129,6 +132,28 @@ class BallsConveyor:
                 )
             )
 
+    def do_boom(self, x, y):
+        boom_list = []
+        for i in self.balls_list:
+            dx = x - i.x
+            dy = y - i.y
+            if abs(dx) > 100:
+                continue
+            if abs(dy) > 100:
+                continue
+            if math.sqrt(dx * dx + dy * dy) > 200:
+                continue
+            boom_list.append(i)
+        self.game_state.animation_manager.add_animation(
+            BoomAnimation(x, y)
+        )
+        self.game_state.add_task(
+            TaskDeleteConveyorBalls(
+                boom_list,
+                self
+            )
+        )
+
     def try_to_inplace_ball(self, flying_ball):
         for i in self.balls_list:
             if i.unriverable:
@@ -141,6 +166,14 @@ class BallsConveyor:
                 continue
             if math.sqrt(dx * dx + dy * dy) > 42:
                 continue
+            if flying_ball.color == "TIME":
+                flying_ball.must_been_deleted = True
+
+                return
+            if flying_ball.color == "BOOM":
+                flying_ball.must_been_deleted = True
+                self.do_boom(flying_ball.x, flying_ball.y)
+                return
             index = self.balls_list.index(i)
             new_ball = ConveyorBall(
                 flying_ball.color,

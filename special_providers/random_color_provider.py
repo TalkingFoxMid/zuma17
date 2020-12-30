@@ -17,6 +17,11 @@ class RandomColorManager:
         colors = ['red', 'blue', 'green', 'yellow']
         if color_distribution is None:
             return self.random.choice(colors)
+        rng = self.random.randint(0, 100)
+        if rng == 50:
+            return "TIME"
+        if 60 < rng < 63:
+            return "BOOM"
         elif sum(color_distribution) == 0:
             return self.random.choice(colors)
         else:
@@ -24,7 +29,8 @@ class RandomColorManager:
             g = color_distribution[1]
             b = color_distribution[2]
             y = color_distribution[3]
-            return self.random.choice(r * ['red'] + g * ['blue'] + b * ['green'] + y * ['yellow'])
+            return self.random.choice(
+                r * ['red'] + g * ['blue'] + b * ['green'] + y * ['yellow'])
 
     def get_qt_color_from_string(self, string):
         return QColor(string)

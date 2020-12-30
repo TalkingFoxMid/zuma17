@@ -9,6 +9,7 @@ from special_providers.angle_provider import AngleProvider
 from animation_manager.animation_manager import AnimationManager
 from animation_manager.tip_animation import TipAnimation
 from special_providers.ball_pixmap_provider import BallPixmapProvider
+from special_providers.space_gif_provider import SpaceGifProvider
 from task_manager.down_pausa_task import DownPausaTask
 from task_manager.task_manager import TaskManager
 from task_manager.up_pausa_task import UpPausaTask
@@ -31,8 +32,10 @@ class GameWidget(QWidget):
 
     def __init__(self, game_level, main_window, menu_widget):
         self.is_paused = False
+        self.TIME_BALL_COLOR = "TIME"
+        self.BOOM_BALL_COLOR = "BOOM"
         super().__init__()
-
+        self.space_gif_provider = SpaceGifProvider()
         self.animation_manager = AnimationManager()
         self.ball_pixmap_provider = BallPixmapProvider()
         self.main_window = main_window
@@ -41,11 +44,12 @@ class GameWidget(QWidget):
         self.game_level = game_level
         self.balls_float_animation = 0
         self.pausa_opacity = 0
-        self.buttons = [
+        self.menu_buttons = [
             MenuButton(200, 400, "resources/kadilo.png", self.back),
-            MenuButton(200, 600, "resources/zavarudo.png", self.pause)
+            MenuButton(200, 600, "resources/zavarudo.png", self.pause),
 
         ]
+        self.buttons = self.menu_buttons
         self.task_manager = TaskManager()
         self.x = 1
         self.y = 1
@@ -56,6 +60,7 @@ class GameWidget(QWidget):
         self.grid = QGridLayout()
         self.canvas = QPixmap(800, 800)
         self.label = QLabel()
+        self.tick = 0
         self.label.setPixmap(self.canvas)
         tracker = MouseTracker(self.label)
         tracker.positionChanged.connect(self.on_position_changed)
@@ -77,7 +82,7 @@ class GameWidget(QWidget):
 
     def draw_meta_menus(self):
         if self.is_meta_menud:
-            self.draw_buttons()
+            self.draw_menu_buttons()
 
     def change_meta_menud_state(self):
         self.is_meta_menud = not self.is_meta_menud
@@ -86,6 +91,7 @@ class GameWidget(QWidget):
         self.balls_float_animation += 0.2
 
     def handle_timer(self):
+        self.tick += 1
         self.task_manager.task_tick()
         if self.game_state.game_ended_win:
             self.end_game_win()
@@ -127,11 +133,21 @@ class GameWidget(QWidget):
         elif a0.button() == 4:
             self.wheel_click()
 
+    def draw_space(self):
+        if self.game_state.time_space_opacity == 0:
+            return
+        self.qp.setOpacity(self.game_state.time_space_opacity)
+        self.qp.drawPixmap(0, 0, 800, 800, QPixmap(
+            self.space_gif_provider.get_res(self.tick))
+                           )
+        self.qp.setOpacity(1)
+
     def draw_game_state(self):
         self.label.setPixmap(QPixmap(self.game_level.map_resource))
-        self.qp = QPainter(self.label.pixmap())
-        self.qp.setFont(QFont("arial", 22))
 
+        self.qp = QPainter(self.label.pixmap())
+        self.draw_space()
+        self.qp.setFont(QFont("arial", 22))
         self.draw_central_frog()
         self.draw_conveyor_balls()
         self.draw_flying_balls()
@@ -139,19 +155,46 @@ class GameWidget(QWidget):
         self.animation_manager.draw_animations(self.qp)
         self.draw_meta_menus()
         self.draw_pausa()
+        self.draw_super_balls()
+
         self.qp.end()
         self.update()
 
-    def draw_buttons(self):
-        for i in self.buttons:
+    def draw_menu_buttons(self):
+        self.draw_buttons(self.menu_buttons)
+
+    def draw_buttons(self, buttons):
+        for i in buttons:
             x, y, w, h = i.get_geometry()
             self.qp.drawPixmap(x, y, w, h, QPixmap(i.get_pixmap()))
             self.qp.drawPixmap(x, y, w, h, QPixmap(i.text_resource))
+
+    def draw_super_balls(self):
+        self.qp.setOpacity(0.4)
+        if self.game_state.frog_operator.boom_ball_available:
+            self.qp.drawPixmap(100, 600, 200, 200,
+                               QPixmap("resources/boom.png"))
+        if self.game_state.frog_operator.time_ball_available:
+            self.qp.drawPixmap(500, 600, 200, 200,
+                               QPixmap("resources/time_stop.png"))
+        self.qp.setOpacity(1)
+
+    def push_time_ball_get(self):
+        self.game_state.frog_operator.get_time_ball()
+
+    def push_boom_ball_get(self):
+        self.game_state.frog_operator.get_boom_ball()
 
     def draw_score(self):
         self.qp.setPen(QColor(0, 0, 0))
         x, y = self.game_level.score_position
         self.qp.drawText(x, y, str(self.game_state.score))
+
+    def get_boom_ball(self):
+        self.game_state.frog_operator.first_ball_color = self.BOOM_BALL_COLOR
+
+    def get_time_ball(self):
+        self.game_state.frog_operator.first_ball_color = self.TIME_BALL_COLOR
 
     def draw_flying_balls(self):
         bpp = self.ball_pixmap_provider

@@ -5,7 +5,11 @@ from task_manager.task_reset_parameter import TaskResetParameter
 class FrogOperator:
     """Инкапсулирует перезарядки, возможности игрока управлять главной
     лягухой"""
+
     def __init__(self, game_state):
+        self.boom_ball_available = True
+        self.time_ball_available = True
+
         self.gs = game_state
         self.balls_swap_parameter = 0
         self.balls_swap_parameter2 = 0
@@ -60,6 +64,18 @@ class FrogOperator:
         self.balls_swap_parameter2 = 1
 
         self.gs.add_task(TaskResetParameter(self.gs, True, True))
+
+    def get_boom_ball(self):
+        if not self.boom_ball_available:
+            return
+        self.boom_ball_available = False
+        self.first_ball_color = "BOOM"
+
+    def get_time_ball(self):
+        if not self.time_ball_available:
+            return
+        self.time_ball_available = False
+        self.first_ball_color = "TIME"
 
     def change_balls(self):
         if self.change_balls_cooldown > 0:

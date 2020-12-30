@@ -11,6 +11,8 @@ class BallPixmapProvider:
             "green": QPixmap("resources/green_ball.png"),
             "blue": QPixmap("resources/blue_ball.png"),
             "yellow": QPixmap("resources/yellow_ball.png"),
+            "BOOM": QPixmap("resources/boom_ball.png"),
+            "TIME": QPixmap("resources/time_stop_ball.png"),
         }
 
     def get_pixmap(self, color):
