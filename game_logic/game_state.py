@@ -1,4 +1,4 @@
-from animation_manager.animation_manager import AnimationManager
+
 from game_logic.balls_conveyor import BallsConveyor
 from game_logic.frog_operator import FrogOperator
 from task_manager.task_manager import TaskManager
@@ -11,7 +11,7 @@ class GameState:
     def __init__(self, game_level, random_color_manager):
         self.angle = 0
         self.random_color_manager = random_color_manager
-        self.animation_manager = AnimationManager()
+        self.animation_manager = None
         self.game_level = game_level
 
         self.balls = []

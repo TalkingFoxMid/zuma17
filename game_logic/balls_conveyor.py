@@ -1,7 +1,6 @@
 import math
 
-from animation_manager.boom_animation import BoomAnimation
-from animation_manager.points_animation import PointsAnimation
+
 from special_providers.color_distribution_provider import \
     ColorDistributionProvider
 from game_logic.conveyor_ball import ConveyorBall
@@ -115,13 +114,13 @@ class BallsConveyor:
             if hotted:
                 print("DELETED_MAXIMUX")
             mid = self.balls_list[int((right_edge + left_edge) / 2)]
-
-            self.game_state.animation_manager.add_animation(
-                PointsAnimation(mid.x,
-                                mid.y,
-                                10 * (right_edge - left_edge + 1),
-                                mid.color)
-            )
+            if self.game_state.animation_manager is not None:
+                self.game_state.animation_manager.add_points_animation(
+                    mid.x,
+                    mid.y,
+                    10 * (right_edge - left_edge + 1),
+                    mid.color
+                )
             for i in self.balls_list[left_edge: right_edge + 1]:
                 i.unriverable = True
 
@@ -144,9 +143,10 @@ class BallsConveyor:
             if math.sqrt(dx * dx + dy * dy) > 200:
                 continue
             boom_list.append(i)
-        self.game_state.animation_manager.add_animation(
-            BoomAnimation(x, y)
-        )
+        if self.game_state.animation_manager is not None:
+            self.game_state.animation_manager.add_boom_animation(
+                x, y
+            )
         self.game_state.add_task(
             TaskDeleteConveyorBalls(
                 boom_list,

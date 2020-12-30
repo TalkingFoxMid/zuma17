@@ -1,3 +1,7 @@
+from animation_manager.boom_animation import BoomAnimation
+from animation_manager.points_animation import PointsAnimation
+
+
 class AnimationManager:
     def __init__(self):
         self.animations = []
@@ -14,3 +18,14 @@ class AnimationManager:
         for i in self.animations:
             i.draw(qp)
             i.tick()
+
+    def add_boom_animation(self, x, y):
+        self.add_animation(BoomAnimation(x, y))
+
+    def add_points_animation(self, x, y, size, color):
+        self.add_animation(PointsAnimation(
+            x,
+            y,
+            size,
+            color
+        ))

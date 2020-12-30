@@ -219,7 +219,7 @@ class GameWidget(QWidget):
                                bpp.get_pixmap(i.color))
 
     def draw_pausa(self):
-        if not self.is_paused:
+        if self.pausa_opacity <= 0:
             return
         self.qp.setOpacity(self.pausa_opacity)
 

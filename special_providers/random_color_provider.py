@@ -1,7 +1,5 @@
 import random
 
-from PyQt5.QtGui import QColor
-
 
 class RandomColorManager:
     """Получает распределение цветов вида [0,1,2,3],
@@ -9,6 +7,7 @@ class RandomColorManager:
     сколько шариков того или иного цвета сейчас на конвеере.
     В зависимости от этого возвращает случайный шар.
     Если такое распределение не пришло, просто возвращает случайный."""
+
     def __init__(self, seed):
         self.random = random.Random()
         self.random.seed(seed)
@@ -31,6 +30,3 @@ class RandomColorManager:
             y = color_distribution[3]
             return self.random.choice(
                 r * ['red'] + g * ['blue'] + b * ['green'] + y * ['yellow'])
-
-    def get_qt_color_from_string(self, string):
-        return QColor(string)
